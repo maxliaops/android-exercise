@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login" >
+
+    <TextView
+        android:id="@+id/textViewPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editUser"
+        android:text="@string/password" />
+
+    <TextView
+        android:id="@+id/textViewUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewHead"
+        android:layout_marginTop="35dp"
+        android:text="@string/user" />
+
+   <EditText
+        android:id="@+id/editPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewPassword"
+        android:ems="10"
+        android:inputType="textPassword" >
+    </EditText>
+
+    <EditText
+        android:id="@+id/editUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewUser"
+        android:ems="10"
+        android:inputType="none" >
+        <requestFocus />
+        </EditText>
+
+    <Button
+        android:id="@+id/btRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        android:layout_toRightOf="@+id/editPassword"
+        android:text="@string/register" />
+
+    <TextView
+        android:id="@+id/textViewHead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="29dp"
+        android:layout_toRightOf="@+id/textViewHead"
+        android:text="@string/initial" />
+
+    <Button
+        android:id="@+id/btAcess"
+        android:layout_width="113dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editPassword"
+        android:layout_marginTop="39dp"
+        android:layout_toLeftOf="@+id/btRegister"
+        android:text="@string/login" />
+
+</RelativeLayout>

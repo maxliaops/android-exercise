@@ -1,0 +1,238 @@
+Apache Ant(TM) version 1.9.4 compiled on April 29 2014
+Trying the default build file: build.xml
+Buildfile: E:\workspace\workspace-android\MyFirstApp\build.xml
+Detected Java version: 1.7 in: D:\glassfish4\jdk7\jre
+Detected OS: Windows XP
+parsing buildfile E:\workspace\workspace-android\MyFirstApp\build.xml with URI = file:/E:/workspace/workspace-android/MyFirstApp/build.xml
+Project base dir set to: E:\workspace\workspace-android\MyFirstApp
+parsing buildfile jar:file:/D:/apache-ant-1.9.4/lib/ant.jar!/org/apache/tools/ant/antlib.xml with URI = jar:file:/D:/apache-ant-1.9.4/lib/ant.jar!/org/apache/tools/ant/antlib.xml from a zip file
+ [property] Loading E:\workspace\workspace-android\MyFirstApp\local.properties
+ [property] Loading E:\workspace\workspace-android\MyFirstApp\ant.properties
+ [property] Loading Environment env.
+Property "env.ANDROID_HOME" has not been set
+Importing file E:\workspace\workspace-android\MyFirstApp\custom_rules.xml from E:\workspace\workspace-android\MyFirstApp\build.xml
+Cannot find E:\workspace\workspace-android\MyFirstApp\custom_rules.xml imported from E:\workspace\workspace-android\MyFirstApp\build.xml
+Importing file D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\tools\ant\build.xml from E:\workspace\workspace-android\MyFirstApp\build.xml
+Overriding previous definition of reference to ant.projectHelper
+parsing buildfile D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\tools\ant\build.xml with URI = file:/D:/Program%20Files/Android/adt-bundle-windows-x86-20131030/sdk/tools/ant/build.xml
+Property "key.store" has not been set
+ [macrodef] creating macro  do-only-if-not-library
+ [macrodef] creating macro  do-only-if-manifest-hasCode
+ [macrodef] creating macro  dex-helper
+ [macrodef] creating macro  package-helper
+ [macrodef] creating macro  zipalign-helper
+ [macrodef] creating macro  run-tests-helper
+ [macrodef] creating macro  record-build-key
+ [macrodef] creating macro  record-build-info
+ [macrodef] creating macro  uninstall-helper
+Overriding previous definition of reference to ant.projectHelper
+Build sequence for target(s) `debug' is [-set-mode-check, -set-debug-files, -check-env, -setup, -set-debug-mode, -debug-obfuscation-check, -pre-build, -build-setup, -code-gen, -pre-compile, -compile, -post-compile, -obfuscate, -dex, -crunch, -package-resources, -package, -post-package, -do-debug, -post-build, debug]
+Complete build sequence is [-set-mode-check, -set-debug-files, -check-env, -setup, -set-debug-mode, -debug-obfuscation-check, -pre-build, -build-setup, -code-gen, -pre-compile, -compile, -post-compile, -obfuscate, -dex, -crunch, -package-resources, -package, -post-package, -do-debug, -post-build, debug, -set-instrumented-mode, instrument, emma, android_rules.-pre-build, android_rules.-release-obfuscation-check, android_rules.-setup, lint, android_rules.-release-sign, -test-project-check, android_rules.nodeps, android_rules.-set-debug-files, android_rules.-set-debug-mode, -pre-clean, -release-nosign, install, installd, android_rules.installt, android_rules.-dex, -set-release-mode, android_rules.installr, android_rules.emma, android_rules.-release-nosign, android_rules.-pre-compile, android_rules.instrument, android_rules.uninstall, android_rules.installi, android_rules.lint, android_rules.-obfuscate, android_rules.clean, android_rules.installd, android_rules.-post-build, android_rules.-debug-obfuscation-check, android_rules.-compile, installt, help, -release-obfuscation-check, -release-prompt-for-password, -release-sign, android_rules.release, installr, release, android_rules.-pre-clean, android_rules.-post-compile, installi, android_rules.-code-gen, android_rules.-release-prompt-for-password, android_rules.-package-resources, android_rules.-set-mode-check, android_rules.-test-project-check, test, android_rules.help, android_rules.install, clean, android_rules.-do-debug, android_rules.-check-env, android_rules.-package, android_rules.-set-instrumented-mode, android_rules.-post-package, android_rules.test, android_rules.debug, uninstall, android_rules.-build-setup, nodeps, android_rules.-crunch, , android_rules.-set-release-mode]
+
+-set-mode-check:
+
+-set-debug-files:
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 22.3.0
+ [checkenv] Installed at D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk
+
+-setup:
+     [echo] Project Name: MyFirstApp
+  [gettype] Project Type: Application
+
+-set-debug-mode:
+Property "emma.enabled" has not been set
+
+-debug-obfuscation-check:
+
+-pre-build:
+
+-build-setup:
+[getbuildtools] Using latest Build Tools: 19.0.0
+ [property] Loading E:\workspace\workspace-android\MyFirstApp\bin\build.prop
+Override ignored for property "build.last.target"
+Override ignored for property "build.last.is.instrumented"
+Override ignored for property "build.last.is.packaging.debug"
+Override ignored for property "build.last.is.signing.debug"
+     [echo] Resolving Build Target for MyFirstApp...
+[gettarget] Project Target:   Android 4.4
+[gettarget] API level:        19
+[gettarget] WARNING: No minSdkVersion value set. Application will install on all Android versions.
+     [echo] ----------
+     [echo] Creating output directories if needed...
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\res because it already exists.
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\libs because it already exists.
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\bin because it already exists.
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\bin\res because it already exists.
+    [mkdir] Created dir: E:\workspace\workspace-android\MyFirstApp\bin\rsObj
+    [mkdir] Created dir: E:\workspace\workspace-android\MyFirstApp\bin\rsLibs
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\gen because it already exists.
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\bin\classes because it already exists.
+    [mkdir] Skipping E:\workspace\workspace-android\MyFirstApp\bin\dexedLibs because it already exists.
+     [echo] ----------
+     [echo] Resolving Dependencies for MyFirstApp...
+[dependency] Library dependencies:
+[dependency] No Libraries
+[dependency] 
+[dependency] ------------------
+     [echo] ----------
+     [echo] Building Libraries with 'debug'...
+   [subant] No sub-builds to iterate on
+
+-code-gen:
+[mergemanifest] Found Deleted Target File
+[mergemanifest] Merging AndroidManifest files into one.
+[mergemanifest] Manifest merger disabled. Using project manifest only.
+     [echo] Handling aidl files...
+     [aidl] No AIDL files to compile.
+     [echo] ----------
+     [echo] Handling RenderScript files...
+     [echo] ----------
+     [echo] Handling Resources...
+Property "android.library" has not been set
+     [aapt] Found Deleted Target File
+     [aapt] Generating resource IDs...
+     [aapt] Current OS is Windows XP
+     [aapt] Executing 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\build-tools\android-4.4\aapt.exe' with arguments:
+     [aapt] 'package'
+     [aapt] '-f'
+     [aapt] '-m'
+     [aapt] '-M'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\bin\AndroidManifest.xml'
+     [aapt] '-S'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\bin\res'
+     [aapt] '-S'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\res'
+     [aapt] '-I'
+     [aapt] 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\platforms\android-19\android.jar'
+     [aapt] '-J'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\gen'
+     [aapt] '--generate-dependencies'
+     [aapt] '-G'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\bin\proguard.txt'
+     [aapt] 
+     [aapt] The ' characters around the executable and arguments are
+     [aapt] not part of the command.
+     [echo] ----------
+     [echo] Handling BuildConfig class...
+[buildconfig] No need to generate new BuildConfig.
+
+-pre-compile:
+
+-compile:
+    [javac] com\example\myfirstapp\MainActivity.java omitted as E:\workspace\workspace-android\MyFirstApp\bin\classes\com\example\myfirstapp\MainActivity.class is up to date.
+    [javac] E:\workspace\workspace-android\MyFirstApp\gen\R.java.d skipped - don't know how to handle it
+    [javac] com\example\myfirstapp\BuildConfig.java omitted as E:\workspace\workspace-android\MyFirstApp\bin\classes\com\example\myfirstapp\BuildConfig.class is up to date.
+    [javac] com\example\myfirstapp\R.java added as com\example\myfirstapp\R.class is outdated.
+    [javac] Compiling 1 source file to E:\workspace\workspace-android\MyFirstApp\bin\classes
+    [javac] Using modern compiler
+    [javac] Compilation arguments:
+    [javac] '-d'
+    [javac] 'E:\workspace\workspace-android\MyFirstApp\bin\classes'
+    [javac] '-classpath'
+    [javac] 'E:\workspace\workspace-android\MyFirstApp\bin\classes'
+    [javac] '-sourcepath'
+    [javac] 'E:\workspace\workspace-android\MyFirstApp\src;E:\workspace\workspace-android\MyFirstApp\gen'
+    [javac] '-target'
+    [javac] '1.5'
+    [javac] '-bootclasspath'
+    [javac] 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\platforms\android-19\android.jar'
+    [javac] '-encoding'
+    [javac] 'UTF-8'
+    [javac] '-g'
+    [javac] '-source'
+    [javac] '1.5'
+    [javac] 
+    [javac] The ' characters around the executable and arguments are
+    [javac] not part of the command.
+    [javac] File to be compiled:
+    [javac]     E:\workspace\workspace-android\MyFirstApp\gen\com\example\myfirstapp\R.java
+
+-post-compile:
+
+-obfuscate:
+
+-dex:
+      [dex] input: E:\workspace\workspace-android\MyFirstApp\bin\classes
+      [dex] Found Deleted Target File
+      [dex] Converting compiled files and external libraries into E:\workspace\workspace-android\MyFirstApp\bin\classes.dex...
+       [dx] Current OS is Windows XP
+       [dx] Executing 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\build-tools\android-4.4\dx.bat' with arguments:
+       [dx] '--dex'
+       [dx] '--output'
+       [dx] 'E:\workspace\workspace-android\MyFirstApp\bin\classes.dex'
+       [dx] 'E:\workspace\workspace-android\MyFirstApp\bin\classes'
+       [dx] 
+       [dx] The ' characters around the executable and arguments are
+       [dx] not part of the command.
+
+-crunch:
+   [crunch] Current OS is Windows XP
+   [crunch] Executing 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\build-tools\android-4.4\aapt.exe' with arguments:
+   [crunch] 'crunch'
+   [crunch] '-v'
+   [crunch] '-S'
+   [crunch] 'E:\workspace\workspace-android\MyFirstApp\res'
+   [crunch] '-C'
+   [crunch] 'E:\workspace\workspace-android\MyFirstApp\bin\res'
+   [crunch] 
+   [crunch] The ' characters around the executable and arguments are
+   [crunch] not part of the command.
+   [crunch] Crunching PNG Files in source dir: E:\workspace\workspace-android\MyFirstApp\res
+   [crunch] To destination dir: E:\workspace\workspace-android\MyFirstApp\bin\res
+   [crunch] Crunched 0 PNG files to update cache
+
+-package-resources:
+     [aapt] Found Deleted Target File
+     [aapt] Creating full resource package...
+     [aapt] Current OS is Windows XP
+     [aapt] Executing 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\build-tools\android-4.4\aapt.exe' with arguments:
+     [aapt] 'package'
+     [aapt] '--no-crunch'
+     [aapt] '-f'
+     [aapt] '--debug-mode'
+     [aapt] '-M'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\bin\AndroidManifest.xml'
+     [aapt] '-S'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\bin\res'
+     [aapt] '-S'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\res'
+     [aapt] '-I'
+     [aapt] 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\platforms\android-19\android.jar'
+     [aapt] '-F'
+     [aapt] 'E:\workspace\workspace-android\MyFirstApp\bin\MyFirstApp.ap_'
+     [aapt] '--generate-dependencies'
+     [aapt] 
+     [aapt] The ' characters around the executable and arguments are
+     [aapt] not part of the command.
+
+-package:
+[apkbuilder] Found Deleted Target File
+[apkbuilder] Creating MyFirstApp-debug-unaligned.apk and signing it with a debug key...
+
+-post-package:
+
+-do-debug:
+ [zipalign] Running zip align on final apk...
+[zip-align] Current OS is Windows XP
+[zip-align] Executing 'D:\Program Files\Android\adt-bundle-windows-x86-20131030\sdk\tools\zipalign.exe' with arguments:
+[zip-align] '-f'
+[zip-align] '4'
+[zip-align] 'E:\workspace\workspace-android\MyFirstApp\bin\MyFirstApp-debug-unaligned.apk'
+[zip-align] 'E:\workspace\workspace-android\MyFirstApp\bin\MyFirstApp-debug.apk'
+[zip-align] 
+[zip-align] The ' characters around the executable and arguments are
+[zip-align] not part of the command.
+     [echo] Debug Package: E:\workspace\workspace-android\MyFirstApp\bin\MyFirstApp-debug.apk
+[propertyfile] Updating property file: E:\workspace\workspace-android\MyFirstApp\bin\build.prop
+[propertyfile] Updating property file: E:\workspace\workspace-android\MyFirstApp\bin\build.prop
+[propertyfile] Updating property file: E:\workspace\workspace-android\MyFirstApp\bin\build.prop
+[propertyfile] Updating property file: E:\workspace\workspace-android\MyFirstApp\bin\build.prop
+
+-post-build:
+
+debug:
+
+BUILD SUCCESSFUL
+Total time: 2 seconds
