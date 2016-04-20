@@ -157,11 +157,11 @@ public class JokeActivity extends Activity {
 
                     mAdapter.addDataItems(data);
                     mAdapter.notifyDataSetChanged();
-                    mPullToRefreshListView.onRefreshComplete();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+            mPullToRefreshListView.onRefreshComplete();
         }
     }
 }
