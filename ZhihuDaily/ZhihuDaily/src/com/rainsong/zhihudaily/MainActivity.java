@@ -11,6 +11,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import com.google.gson.Gson;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -94,6 +96,20 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             Log.d(TAG, "onPostExecute(): result: " + result);
+            if (result != null) {
+                Gson gson = new Gson();
+
+                NewsListEntity newsListEntity = null;
+                try {
+                    newsListEntity = gson
+                            .fromJson(result, NewsListEntity.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (newsListEntity != null) {
+                    Log.d(TAG, "onPostExecute(): date: " + newsListEntity.date);
+                }
+            }
         }
     }
 
