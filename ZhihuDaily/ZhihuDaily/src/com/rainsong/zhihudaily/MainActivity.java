@@ -11,14 +11,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.Gson;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.ListView;
+
+import com.google.gson.Gson;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -26,6 +27,8 @@ public class MainActivity extends Activity {
     public static final String URL_LATEST = "http://news-at.zhihu.com/api/4/news/latest";
 
     private Context mContext;
+    private ListView mListView;
+    private NewsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mContext = this;
+        mListView = (ListView) findViewById(R.id.list);
+        mAdapter = new NewsAdapter(mContext);
+        mListView.setAdapter(mAdapter);
+
         new GetLatestNewsTask(mContext)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -108,6 +115,9 @@ public class MainActivity extends Activity {
                 }
                 if (newsListEntity != null) {
                     Log.d(TAG, "onPostExecute(): date: " + newsListEntity.date);
+
+                    mAdapter.addDataItems(newsListEntity.stories);
+                    mAdapter.notifyDataSetChanged();
                 }
             }
         }
