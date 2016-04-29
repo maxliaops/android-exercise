@@ -1,12 +1,13 @@
 package com.rainsong.zhihudaily.util;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import android.content.Context;
+
+import com.rainsong.zhihudaily.R;
 
 public class ZhihuUtils {
 
@@ -28,7 +29,9 @@ public class ZhihuUtils {
 
         String week = DateUtils.getWeekOfDate(date);
 
-        return null;
+        return currentDate.equals(pre) ? context
+                .getString(R.string.listview_hotnews) : new StringBuilder()
+                .append(pre).append(" ").append(week).toString();
     }
 
     /**

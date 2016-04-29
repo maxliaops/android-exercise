@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,12 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rainsong.zhihudaily.NewsListEntity.NewsEntity;
+import com.rainsong.zhihudaily.util.ZhihuUtils;
 
 public class NewsAdapter extends BaseAdapter {
+
+    private static final int TYPE_NORMAL = 0;
+    private static final int TYPE_TAG = 1;
 
     protected Context mContext;
     protected LayoutInflater mInflater;
@@ -39,8 +44,27 @@ public class NewsAdapter extends BaseAdapter {
 
     }
 
+    public void addDataItem(NewsEntity item) {
+        mDataList.add(item);
+    }
+
     public void addDataItems(List<NewsEntity> data) {
         mDataList.addAll(data);
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        NewsEntity item = mDataList.get(position);
+        if (item.isTag) {
+            return TYPE_TAG;
+        } else {
+            return TYPE_NORMAL;
+        }
     }
 
     @Override
@@ -62,27 +86,58 @@ public class NewsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.list_item, parent, false);
-            holder = new ViewHolder();
-            holder.title = (TextView) convertView
-                    .findViewById(R.id.list_item_title);
-            holder.image = (ImageView) convertView
-                    .findViewById(R.id.list_item_image);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        int type = getItemViewType(position);
         NewsEntity item = mDataList.get(position);
-        holder.title.setText(item.title);
-        mImageLoader.displayImage(item.images.get(0), holder.image, mOptions);
-
-        return convertView;
+        ViewHolder holder = null;
+        switch (type) {
+        case TYPE_NORMAL:
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.list_item, parent,
+                        false);
+                holder = new ViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            ImageView newsImageView = (ImageView) holder
+                    .getView(R.id.list_item_image);
+            TextView newsTitleView = (TextView) holder
+                    .getView(R.id.list_item_title);
+            newsTitleView.setText(item.title);
+            mImageLoader.displayImage(item.images.get(0), newsImageView,
+                    mOptions);
+            return convertView;
+        case TYPE_TAG:
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.list_item_tag, parent,
+                        false);
+                holder = new ViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            TextView dateView = (TextView) holder.getView(R.id.date_text);
+            dateView.setText(ZhihuUtils.getDateTag(mContext, item.title));
+            return convertView;
+        }
+        return null;
     }
 
-    class ViewHolder {
-        TextView title;
-        ImageView image;
+    public class ViewHolder {
+        private SparseArray<View> views = new SparseArray<View>();
+        private View convertView;
+
+        public ViewHolder(View convertView) {
+            this.convertView = convertView;
+        }
+
+        public <T extends View> T getView(int resId) {
+            View v = views.get(resId);
+            if (null == v) {
+                v = convertView.findViewById(resId);
+                views.put(resId, v);
+            }
+            return (T) v;
+        }
     }
 }

@@ -4,5 +4,6 @@
     <color name="black">#ff000000</color>
     <color name="list_item_bg_light_highlight">#ffe9e9e9</color>
     <color name="list_item_bg_light_normal">#ffffffff</color>
+    <color name="list_item_date_light">#272727</color>
 
 </resources>

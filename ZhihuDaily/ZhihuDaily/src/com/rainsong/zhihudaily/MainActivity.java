@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.rainsong.zhihudaily.NewsListEntity.NewsEntity;
 import com.rainsong.zhihudaily.util.ZhihuUtils;
 
 public class MainActivity extends Activity {
@@ -150,6 +151,10 @@ public class MainActivity extends Activity {
                 if (newsListEntity != null) {
                     Log.d(TAG, "onPostExecute(): date: " + newsListEntity.date);
                     mCurrentDate = newsListEntity.date;
+                    NewsEntity tagNewsEntity = new NewsEntity();
+                    tagNewsEntity.isTag = true;
+                    tagNewsEntity.title = newsListEntity.date;
+                    mAdapter.addDataItem(tagNewsEntity);
                     mAdapter.addDataItems(newsListEntity.stories);
                     mAdapter.notifyDataSetChanged();
                 }
@@ -226,6 +231,10 @@ public class MainActivity extends Activity {
                 if (newsListEntity != null) {
                     Log.d(TAG, "onPostExecute(): date: " + newsListEntity.date);
                     mCurrentDate = newsListEntity.date;
+                    NewsEntity tagNewsEntity = new NewsEntity();
+                    tagNewsEntity.isTag = true;
+                    tagNewsEntity.title = newsListEntity.date;
+                    mAdapter.addDataItem(tagNewsEntity);
                     mAdapter.addDataItems(newsListEntity.stories);
                     mAdapter.notifyDataSetChanged();
                 }
