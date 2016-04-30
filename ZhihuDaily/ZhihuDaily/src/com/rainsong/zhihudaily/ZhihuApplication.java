@@ -13,12 +13,26 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.rainsong.zhihudaily.db.DatabaseHelper;
+import com.rainsong.zhihudaily.db.NewsDataSource;
 
 public class ZhihuApplication extends Application {
+
+    private DatabaseHelper mDatabaseHelper;
+    private static NewsDataSource mNewsDataSource;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mDatabaseHelper = new DatabaseHelper(getApplicationContext());
+        mNewsDataSource = new NewsDataSource(mDatabaseHelper);
+
         initImageLoader(getApplicationContext());
+    }
+
+    public static NewsDataSource getNewsDataSource() {
+        return mNewsDataSource;
     }
 
     public static void initImageLoader(Context context) {
