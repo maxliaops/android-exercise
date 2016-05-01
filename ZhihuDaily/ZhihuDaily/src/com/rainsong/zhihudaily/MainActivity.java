@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +26,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.rainsong.zhihudaily.NewsListEntity.NewsEntity;
+import com.rainsong.zhihudaily.db.NewsDataSource;
+import com.rainsong.zhihudaily.util.GsonUtils;
+import com.rainsong.zhihudaily.util.ListUtils;
 import com.rainsong.zhihudaily.util.ZhihuUtils;
 
 public class MainActivity extends Activity {
@@ -75,6 +79,9 @@ public class MainActivity extends Activity {
         mAdapter = new NewsAdapter(mContext);
         actualListView.setAdapter(mAdapter);
 
+        new LoadCacheNewsTask()
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         new GetLatestNewsTask(mContext)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -84,6 +91,47 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private boolean checkIsContentSame(String oldContent, String newContent) {
+
+        if (TextUtils.isEmpty(oldContent) || TextUtils.isEmpty(newContent)) {
+            return false;
+        }
+
+        return oldContent.equals(newContent);
+    }
+
+    // 读取缓存中的最新新闻
+    private class LoadCacheNewsTask extends
+            AsyncTask<String, Void, NewsListEntity> {
+
+        @Override
+        protected NewsListEntity doInBackground(String... params) {
+
+            NewsListEntity latestNewsEntity = ZhihuApplication
+                    .getNewsDataSource().getLatestNews();
+
+            if (latestNewsEntity != null) {
+                mCurrentDate = latestNewsEntity.date;
+            }
+
+            return latestNewsEntity;
+        }
+
+        @Override
+        protected void onPostExecute(NewsListEntity result) {
+            super.onPostExecute(result);
+
+            if (result != null && !ListUtils.isEmpty(result.stories)) {
+                NewsEntity tagNewsEntity = new NewsEntity();
+                tagNewsEntity.isTag = true;
+                tagNewsEntity.title = result.date;
+                mAdapter.addDataItem(tagNewsEntity);
+                mAdapter.addDataItems(result.stories);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private class GetLatestNewsTask extends AsyncTask<String, Void, String> {
@@ -138,18 +186,25 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             Log.d(TAG, "onPostExecute(): result: " + result);
+            String oldContent = null;
+            String date = null;
             if (result != null) {
-                Gson gson = new Gson();
 
                 NewsListEntity newsListEntity = null;
-                try {
-                    newsListEntity = gson
-                            .fromJson(result, NewsListEntity.class);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
+                        NewsListEntity.class);
                 if (newsListEntity != null) {
-                    Log.d(TAG, "onPostExecute(): date: " + newsListEntity.date);
+                    date = newsListEntity != null ? newsListEntity.date : null;
+                    Log.d(TAG, "onPostExecute(): date: " + date);
+                    oldContent = ZhihuApplication.getNewsDataSource()
+                            .getContent(date);
+
+                    if (!checkIsContentSame(oldContent, result)) {
+                        ZhihuApplication.getNewsDataSource()
+                                .insertOrUpdateNewsList(
+                                        NewsDataSource.NEWS_LIST, date, result);
+                    }
+
                     mCurrentDate = newsListEntity.date;
                     NewsEntity tagNewsEntity = new NewsEntity();
                     tagNewsEntity.isTag = true;
@@ -176,7 +231,7 @@ public class MainActivity extends Activity {
                 return null;
             String date = params[0];
 
-            String targetUrl = URL_BEFORE + date;
+            String targetUrl = URL_BEFORE + ZhihuUtils.getAddedDate(date);
 
             ArrayList<NameValuePair> paramList = new ArrayList<NameValuePair>();
 
@@ -218,18 +273,25 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             Log.d(TAG, "onPostExecute(): result: " + result);
+            String oldContent = null;
+            String date = null;
             if (result != null) {
-                Gson gson = new Gson();
 
                 NewsListEntity newsListEntity = null;
-                try {
-                    newsListEntity = gson
-                            .fromJson(result, NewsListEntity.class);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
+                        NewsListEntity.class);
                 if (newsListEntity != null) {
-                    Log.d(TAG, "onPostExecute(): date: " + newsListEntity.date);
+                    date = newsListEntity != null ? newsListEntity.date : null;
+                    Log.d(TAG, "onPostExecute(): date: " + date);
+                    oldContent = ZhihuApplication.getNewsDataSource()
+                            .getContent(date);
+
+                    if (!checkIsContentSame(oldContent, result)) {
+                        ZhihuApplication.getNewsDataSource()
+                                .insertOrUpdateNewsList(
+                                        NewsDataSource.NEWS_LIST, date, result);
+                    }
+
                     mCurrentDate = newsListEntity.date;
                     NewsEntity tagNewsEntity = new NewsEntity();
                     tagNewsEntity.isTag = true;

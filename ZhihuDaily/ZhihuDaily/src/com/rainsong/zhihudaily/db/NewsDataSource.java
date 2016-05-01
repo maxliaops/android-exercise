@@ -3,7 +3,11 @@ package com.rainsong.zhihudaily.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.SyncStateContract.Constants;
 import android.text.TextUtils;
+
+import com.rainsong.zhihudaily.NewsListEntity;
+import com.rainsong.zhihudaily.util.GsonUtils;
 
 public class NewsDataSource {
 
@@ -78,5 +82,32 @@ public class NewsDataSource {
         } else {
             insertDailyNewsList(type, key, content);
         }
+    }
+
+    /**
+     * 获取新闻表中，日期最新那天的数据
+     * 
+     * @return
+     */
+    public NewsListEntity getLatestNews() {
+
+        NewsListEntity newsListEntity = null;
+
+        String orderBy = DatabaseHelper.NEWS_COLUMN_KEY + " desc";
+
+        Cursor cursor = mDb.query(DatabaseHelper.NEWS_TABLE_NAME, allColumns,
+                DatabaseHelper.NEWS_COLUMN_TYPE + "=" + NEWS_LIST, null, null,
+                null, orderBy);
+
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+            String content = cursor.getString(cursor
+                    .getColumnIndex(DatabaseHelper.NEWS_COLUMN_CONTENT));
+            newsListEntity = (NewsListEntity) GsonUtils.getEntity(content,
+                    NewsListEntity.class);
+        }
+
+        cursor.close();
+
+        return newsListEntity;
     }
 }
