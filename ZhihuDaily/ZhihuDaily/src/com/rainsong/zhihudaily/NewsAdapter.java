@@ -28,11 +28,12 @@ public class NewsAdapter extends BaseAdapter {
     private ImageLoader mImageLoader;
     private DisplayImageOptions mOptions;
 
-    public NewsAdapter(Context context) {
+    public NewsAdapter(Context context, ArrayList<NewsEntity> list) {
         mContext = context;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mDataList = new ArrayList<NewsEntity>();
+        mDataList = list == null ? new ArrayList<NewsEntity>()
+                : new ArrayList<NewsEntity>(list);
         mImageLoader = ImageLoader.getInstance();
         mOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.image_small_default) // 设置图片下载期间显示的图片
@@ -44,12 +45,10 @@ public class NewsAdapter extends BaseAdapter {
 
     }
 
-    public void addDataItem(NewsEntity item) {
-        mDataList.add(item);
-    }
-
-    public void addDataItems(List<NewsEntity> data) {
-        mDataList.addAll(data);
+    public void updateData(ArrayList<NewsEntity> list) {
+        this.mDataList = list == null ? new ArrayList<NewsEntity>()
+                : new ArrayList<NewsEntity>(list);
+        this.notifyDataSetChanged();
     }
 
     @Override

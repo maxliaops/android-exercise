@@ -41,7 +41,9 @@ public class MainActivity extends Activity {
 
     private Context mContext;
     private PullToRefreshListView mPullToRefreshListView;
+    private ListView mActualListView;
     private NewsAdapter mAdapter;
+    private ArrayList<NewsEntity> mNewsList = null;
     private String mCurrentDate = null;
 
     @Override
@@ -75,9 +77,7 @@ public class MainActivity extends Activity {
                     }
                 });
 
-        ListView actualListView = mPullToRefreshListView.getRefreshableView();
-        mAdapter = new NewsAdapter(mContext);
-        actualListView.setAdapter(mAdapter);
+        mActualListView = mPullToRefreshListView.getRefreshableView();
 
         new LoadCacheNewsTask()
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -91,6 +91,15 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private void setAdapter(ArrayList<NewsEntity> newsList) {
+        if (mAdapter == null) {
+            mAdapter = new NewsAdapter(mContext, newsList);
+            mActualListView.setAdapter(mAdapter);
+        } else {
+            mAdapter.updateData(newsList);
+        }
     }
 
     private boolean checkIsContentSame(String oldContent, String newContent) {
@@ -127,9 +136,12 @@ public class MainActivity extends Activity {
                 NewsEntity tagNewsEntity = new NewsEntity();
                 tagNewsEntity.isTag = true;
                 tagNewsEntity.title = result.date;
-                mAdapter.addDataItem(tagNewsEntity);
-                mAdapter.addDataItems(result.stories);
-                mAdapter.notifyDataSetChanged();
+
+                mNewsList = new ArrayList<NewsEntity>();
+                mNewsList.add(tagNewsEntity);
+                mNewsList.addAll(result.stories);
+
+                setAdapter(mNewsList);
             }
         }
     }
@@ -209,9 +221,12 @@ public class MainActivity extends Activity {
                     NewsEntity tagNewsEntity = new NewsEntity();
                     tagNewsEntity.isTag = true;
                     tagNewsEntity.title = newsListEntity.date;
-                    mAdapter.addDataItem(tagNewsEntity);
-                    mAdapter.addDataItems(newsListEntity.stories);
-                    mAdapter.notifyDataSetChanged();
+
+                    mNewsList = new ArrayList<NewsEntity>();
+                    mNewsList.add(tagNewsEntity);
+                    mNewsList.addAll(newsListEntity.stories);
+
+                    setAdapter(mNewsList);
                 }
             }
         }
@@ -296,9 +311,11 @@ public class MainActivity extends Activity {
                     NewsEntity tagNewsEntity = new NewsEntity();
                     tagNewsEntity.isTag = true;
                     tagNewsEntity.title = newsListEntity.date;
-                    mAdapter.addDataItem(tagNewsEntity);
-                    mAdapter.addDataItems(newsListEntity.stories);
-                    mAdapter.notifyDataSetChanged();
+
+                    mNewsList.add(tagNewsEntity);
+                    mNewsList.addAll(newsListEntity.stories);
+
+                    setAdapter(mNewsList);
                 }
             }
             mPullToRefreshListView.onRefreshComplete();
