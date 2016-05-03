@@ -111,6 +111,27 @@ public class MainActivity extends Activity {
         return oldContent.equals(newContent);
     }
 
+    private String httpGet(String targetUrl) {
+        HttpGet httpRequest = new HttpGet(targetUrl);
+        try {
+
+            HttpClient httpClient = new DefaultHttpClient();
+
+            HttpResponse httpResponse = httpClient.execute(httpRequest);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                String strResult = EntityUtils.toString(httpResponse
+                        .getEntity());
+                return strResult;
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // 读取缓存中的最新新闻
     private class LoadCacheNewsTask extends
             AsyncTask<String, Void, NewsListEntity> {
@@ -131,7 +152,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(NewsListEntity result) {
             super.onPostExecute(result);
-
+            Log.d(TAG, "LoadCacheNewsTask.onPostExecute(): result: " + result.date);
             if (result != null && !ListUtils.isEmpty(result.stories)) {
                 NewsEntity tagNewsEntity = new NewsEntity();
                 tagNewsEntity.isTag = true;
@@ -175,29 +196,12 @@ public class MainActivity extends Activity {
             }
 
             Log.d(TAG, "doInBackground(): targetUrl=" + targetUrl);
-            HttpGet httpRequest = new HttpGet(targetUrl);
-            try {
-
-                HttpClient httpClient = new DefaultHttpClient();
-
-                HttpResponse httpResponse = httpClient.execute(httpRequest);
-
-                if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                    String strResult = EntityUtils.toString(httpResponse
-                            .getEntity());
-                    return strResult;
-                } else {
-                    return null;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+            return httpGet(targetUrl);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, "onPostExecute(): result: " + result);
+            Log.d(TAG, "GetLatestNewsTask.onPostExecute(): result: " + result.length());
             String oldContent = null;
             String date = null;
             if (result != null) {
@@ -215,6 +219,8 @@ public class MainActivity extends Activity {
                         ZhihuApplication.getNewsDataSource()
                                 .insertOrUpdateNewsList(
                                         NewsDataSource.NEWS_LIST, date, result);
+                        Log.d(TAG, "doInBackground(): insertOrUpdateNewsList: "
+                                + date);
                     }
 
                     mCurrentDate = newsListEntity.date;
@@ -246,49 +252,52 @@ public class MainActivity extends Activity {
                 return null;
             String date = params[0];
 
-            String targetUrl = URL_BEFORE + ZhihuUtils.getAddedDate(date);
+            String oldContent = ZhihuApplication.getNewsDataSource()
+                    .getContent(date);
 
-            ArrayList<NameValuePair> paramList = new ArrayList<NameValuePair>();
+            if (!TextUtils.isEmpty(oldContent)) {
+                return oldContent;
+            } else {
+                String newContent = null;
+                String targetUrl = URL_BEFORE + ZhihuUtils.getAddedDate(date);
 
-            for (int i = 0; i < paramList.size(); i++) {
-                NameValuePair nowPair = paramList.get(i);
-                String value = nowPair.getValue();
-                try {
-                    value = URLEncoder.encode(value, "UTF-8");
-                } catch (Exception e) {
+                ArrayList<NameValuePair> paramList = new ArrayList<NameValuePair>();
+
+                for (int i = 0; i < paramList.size(); i++) {
+                    NameValuePair nowPair = paramList.get(i);
+                    String value = nowPair.getValue();
+                    try {
+                        value = URLEncoder.encode(value, "UTF-8");
+                    } catch (Exception e) {
+                    }
+                    if (i == 0) {
+                        targetUrl += ("?" + nowPair.getName() + "=" + value);
+                    } else {
+                        targetUrl += ("&" + nowPair.getName() + "=" + value);
+                    }
                 }
-                if (i == 0) {
-                    targetUrl += ("?" + nowPair.getName() + "=" + value);
-                } else {
-                    targetUrl += ("&" + nowPair.getName() + "=" + value);
+
+                Log.d(TAG, "doInBackground(): targetUrl=" + targetUrl);
+
+                newContent = httpGet(targetUrl);
+
+                if (!checkIsContentSame(oldContent, newContent)) {
+                    ZhihuApplication.getNewsDataSource()
+                            .insertOrUpdateNewsList(NewsDataSource.NEWS_LIST,
+                                    date, newContent);
+                    Log.d(TAG, "doInBackground(): insertOrUpdateNewsList: "
+                            + date);
                 }
+
+                return newContent;
+
             }
-
-            Log.d(TAG, "doInBackground(): targetUrl=" + targetUrl);
-            HttpGet httpRequest = new HttpGet(targetUrl);
-            try {
-
-                HttpClient httpClient = new DefaultHttpClient();
-
-                HttpResponse httpResponse = httpClient.execute(httpRequest);
-
-                if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                    String strResult = EntityUtils.toString(httpResponse
-                            .getEntity());
-                    return strResult;
-                } else {
-                    return null;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, "onPostExecute(): result: " + result);
-            String oldContent = null;
+            Log.d(TAG, "GetMoreNewsTask.onPostExecute(): result: " + result.length());
+
             String date = null;
             if (result != null) {
 
@@ -298,14 +307,6 @@ public class MainActivity extends Activity {
                 if (newsListEntity != null) {
                     date = newsListEntity != null ? newsListEntity.date : null;
                     Log.d(TAG, "onPostExecute(): date: " + date);
-                    oldContent = ZhihuApplication.getNewsDataSource()
-                            .getContent(date);
-
-                    if (!checkIsContentSame(oldContent, result)) {
-                        ZhihuApplication.getNewsDataSource()
-                                .insertOrUpdateNewsList(
-                                        NewsDataSource.NEWS_LIST, date, result);
-                    }
 
                     mCurrentDate = newsListEntity.date;
                     NewsEntity tagNewsEntity = new NewsEntity();
