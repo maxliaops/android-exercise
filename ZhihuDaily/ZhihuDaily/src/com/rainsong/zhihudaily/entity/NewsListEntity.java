@@ -1,4 +1,4 @@
-package com.rainsong.zhihudaily;
+package com.rainsong.zhihudaily.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

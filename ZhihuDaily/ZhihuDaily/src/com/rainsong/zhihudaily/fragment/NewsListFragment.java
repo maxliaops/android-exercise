@@ -1,4 +1,4 @@
-package com.rainsong.zhihudaily;
+package com.rainsong.zhihudaily.fragment;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -11,28 +11,33 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.rainsong.zhihudaily.NewsListEntity.NewsEntity;
+import com.rainsong.zhihudaily.R;
+import com.rainsong.zhihudaily.ZhihuApplication;
+import com.rainsong.zhihudaily.adapter.NewsAdapter;
 import com.rainsong.zhihudaily.db.NewsDataSource;
+import com.rainsong.zhihudaily.entity.NewsListEntity;
+import com.rainsong.zhihudaily.entity.NewsListEntity.NewsEntity;
 import com.rainsong.zhihudaily.util.GsonUtils;
 import com.rainsong.zhihudaily.util.ListUtils;
 import com.rainsong.zhihudaily.util.ZhihuUtils;
 
-public class MainActivity extends Activity {
-    private static final String TAG = "MainActivity";
+public class NewsListFragment extends Fragment {
+    private static final String TAG = "NewsListFragment";
 
     // 获取最新新闻
     public static final String URL_LATEST = "http://news-at.zhihu.com/api/4/news/latest";
@@ -47,12 +52,15 @@ public class MainActivity extends Activity {
     private String mCurrentDate = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_news_list, container,
+                false);
 
-        mContext = this;
-        mPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list);
+        mContext = getActivity();
+        mPullToRefreshListView = (PullToRefreshListView) view
+                .findViewById(R.id.list);
         mPullToRefreshListView
                 .setMode(PullToRefreshBase.Mode.PULL_UP_TO_REFRESH);
         mPullToRefreshListView
@@ -61,7 +69,7 @@ public class MainActivity extends Activity {
                     public void onRefresh(
                             PullToRefreshBase<ListView> refreshView) {
                         String label = DateUtils.formatDateTime(
-                                getApplicationContext(),
+                                mContext.getApplicationContext(),
                                 System.currentTimeMillis(),
                                 DateUtils.FORMAT_SHOW_TIME
                                         | DateUtils.FORMAT_SHOW_DATE
@@ -71,9 +79,16 @@ public class MainActivity extends Activity {
                         refreshView.getLoadingLayoutProxy()
                                 .setLastUpdatedLabel(label);
 
-                        mCurrentDate = ZhihuUtils.getBeforeDate(mCurrentDate);
-                        new GetMoreNewsTask(mContext).executeOnExecutor(
-                                AsyncTask.THREAD_POOL_EXECUTOR, mCurrentDate);
+                        if (mCurrentDate != null) {
+                            mCurrentDate = ZhihuUtils
+                                    .getBeforeDate(mCurrentDate);
+                            new GetMoreNewsTask(mContext).executeOnExecutor(
+                                    AsyncTask.THREAD_POOL_EXECUTOR,
+                                    mCurrentDate);
+                        } else {
+                            new GetLatestNewsTask(mContext)
+                                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
                     }
                 });
 
@@ -84,13 +99,8 @@ public class MainActivity extends Activity {
 
         new GetLatestNewsTask(mContext)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
+        return view;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     private void setAdapter(ArrayList<NewsEntity> newsList) {
@@ -152,7 +162,10 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(NewsListEntity result) {
             super.onPostExecute(result);
-            Log.d(TAG, "LoadCacheNewsTask.onPostExecute(): result: " + result.date);
+            if (result != null) {
+                Log.d(TAG, "LoadCacheNewsTask.onPostExecute(): result: "
+                        + result.date);
+            }
             if (result != null && !ListUtils.isEmpty(result.stories)) {
                 NewsEntity tagNewsEntity = new NewsEntity();
                 tagNewsEntity.isTag = true;
@@ -201,11 +214,11 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, "GetLatestNewsTask.onPostExecute(): result: " + result.length());
             String oldContent = null;
             String date = null;
             if (result != null) {
-
+                Log.d(TAG, "GetLatestNewsTask.onPostExecute(): result: "
+                        + result.length());
                 NewsListEntity newsListEntity = null;
                 newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
                         NewsListEntity.class);
@@ -235,6 +248,7 @@ public class MainActivity extends Activity {
                     setAdapter(mNewsList);
                 }
             }
+            mPullToRefreshListView.onRefreshComplete();
         }
     }
 
@@ -296,10 +310,11 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, "GetMoreNewsTask.onPostExecute(): result: " + result.length());
-
             String date = null;
             if (result != null) {
+                Log.d(TAG,
+                        "GetMoreNewsTask.onPostExecute(): result: "
+                                + result.length());
 
                 NewsListEntity newsListEntity = null;
                 newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
@@ -318,9 +333,10 @@ public class MainActivity extends Activity {
 
                     setAdapter(mNewsList);
                 }
+            } else {
+                mCurrentDate = ZhihuUtils.getAddedDate(mCurrentDate);
             }
             mPullToRefreshListView.onRefreshComplete();
         }
     }
-
 }

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.rainsong.zhihudaily.NewsListEntity;
-import com.rainsong.zhihudaily.NewsListEntity.NewsEntity;
+import com.rainsong.zhihudaily.entity.NewsListEntity;
+import com.rainsong.zhihudaily.entity.NewsListEntity.NewsEntity;
 
 public class GsonUtils {
     public static ArrayList<NewsEntity> getNewsList(String content) {

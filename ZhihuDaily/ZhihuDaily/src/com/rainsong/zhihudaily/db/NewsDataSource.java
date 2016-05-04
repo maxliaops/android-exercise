@@ -3,10 +3,9 @@ package com.rainsong.zhihudaily.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.SyncStateContract.Constants;
 import android.text.TextUtils;
 
-import com.rainsong.zhihudaily.NewsListEntity;
+import com.rainsong.zhihudaily.entity.NewsListEntity;
 import com.rainsong.zhihudaily.util.GsonUtils;
 
 public class NewsDataSource {

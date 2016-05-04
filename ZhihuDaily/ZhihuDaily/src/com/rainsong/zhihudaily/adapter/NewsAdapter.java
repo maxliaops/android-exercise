@@ -1,4 +1,4 @@
-package com.rainsong.zhihudaily;
+package com.rainsong.zhihudaily.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rainsong.zhihudaily.NewsListEntity.NewsEntity;
+import com.rainsong.zhihudaily.R;
+import com.rainsong.zhihudaily.entity.NewsListEntity.NewsEntity;
 import com.rainsong.zhihudaily.util.ZhihuUtils;
 
 public class NewsAdapter extends BaseAdapter {
