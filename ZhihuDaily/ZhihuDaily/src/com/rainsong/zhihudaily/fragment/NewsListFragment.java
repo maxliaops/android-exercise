@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -50,6 +52,8 @@ public class NewsListFragment extends Fragment {
     private NewsAdapter mAdapter;
     private ArrayList<NewsEntity> mNewsList = null;
     private String mCurrentDate = null;
+    // 上次listView滚动到最下方时，itemId
+    private int mListViewPreLast = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,7 +97,36 @@ public class NewsListFragment extends Fragment {
                 });
 
         mActualListView = mPullToRefreshListView.getRefreshableView();
+        mActualListView.setOnScrollListener(new OnScrollListener() {
 
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                    int visibleItemCount, int totalItemCount) {
+
+                final int lastItem = firstVisibleItem + visibleItemCount;
+
+                if (lastItem == totalItemCount) {
+                    if (mListViewPreLast != lastItem) {
+                        if (mCurrentDate != null) {
+                            mCurrentDate = ZhihuUtils
+                                    .getBeforeDate(mCurrentDate);
+                            new GetMoreNewsTask(mContext).executeOnExecutor(
+                                    AsyncTask.THREAD_POOL_EXECUTOR,
+                                    mCurrentDate);
+                        } else {
+                            new GetLatestNewsTask(mContext)
+                                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
+                        mListViewPreLast = lastItem;
+                    }
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+        });
         new LoadCacheNewsTask()
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
