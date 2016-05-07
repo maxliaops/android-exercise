@@ -2,4 +2,47 @@
 
     <string name="app_name">天行新闻</string>
 
+    <string name="category_all">推荐</string>
+    <string name="category_all_my">推荐</string>
+    <string name="category_society">社会</string>
+    <string name="category_subscribe">订阅</string>
+    <string name="category_video">视频</string>
+    <string name="category_health">健康</string>
+    <string name="category_sports">体育</string>
+    <string name="category_tech">科技</string>
+    <string name="category_car">汽车</string>
+    <string name="category_entertainment">娱乐</string>
+    <string name="category_finance">财经</string>
+    <string name="category_military">军事</string>
+    <string name="category_world">国际</string>
+    <string name="category_hot">热点</string>
+    <string name="category_positive">正能量</string>
+    <string name="category_essay_joke">段子</string>
+    <string name="category_image_funny">趣图</string>
+    <string name="category_image_ppmm">美女</string>
+    <string name="category_movie">电影</string>
+    <string name="category_digital">数码</string>
+    <string name="category_news_fashion">时尚</string>
+    <string name="category_rumor">辟谣</string>
+    <string name="category_marvel">奇葩</string>
+    <string name="category_news_game">游戏</string>
+    <string name="category_news_travel">旅游</string>
+    <string name="category_news_baby">育儿</string>
+    <string name="category_fitness">减肥</string>
+    <string name="category_news_regimen">养生</string>
+    <string name="category_news_food">美食</string>
+    <string name="category_government">政务</string>
+    <string name="category_news_history">历史</string>
+    <string name="category_news_discovery">探索</string>
+    <string name="category_news_story">故事</string>
+    <string name="category_news_essay">美文</string>
+    <string name="category_emotion">情感</string>
+    <string name="category_essay_saying">语录</string>
+    <string name="category_image_wonderful">美图</string>
+    <string name="category_news_house">家居</string>
+    <string name="category_news_home">房产</string>
+    <string name="category_funny">搞笑</string>
+    <string name="category_news_astrology">星座</string>
+    <string name="category_news_culture">文化</string>
+    <string name="category_graduate">毕业生</string>
 </resources>

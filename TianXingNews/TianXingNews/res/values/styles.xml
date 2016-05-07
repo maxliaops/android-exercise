@@ -14,7 +14,12 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+		<item name="android:windowNoTitle">true</item>
     </style>
-
+    
+    <style name="main_title_bar_style">
+        <item name="android:background">@drawable/bg_titlebar_main</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/title_bar_height</item>
+    </style>
 </resources>
