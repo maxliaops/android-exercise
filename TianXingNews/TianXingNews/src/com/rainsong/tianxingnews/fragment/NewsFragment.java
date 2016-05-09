@@ -1,4 +1,4 @@
-package com.rainsong.tianxingnews;
+package com.rainsong.tianxingnews.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

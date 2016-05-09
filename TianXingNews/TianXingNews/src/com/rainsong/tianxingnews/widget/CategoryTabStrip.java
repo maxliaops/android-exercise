@@ -1,4 +1,4 @@
-package com.rainsong.tianxingnews;
+package com.rainsong.tianxingnews.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.rainsong.tianxingnews.R;
 
 public class CategoryTabStrip extends HorizontalScrollView {
     private LayoutInflater mLayoutInflater;
@@ -49,6 +51,7 @@ public class CategoryTabStrip extends HorizontalScrollView {
 
     public CategoryTabStrip(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
         mLayoutInflater = LayoutInflater.from(context);
         drawables = new TextDrawable[3];
         int i = 0;
@@ -62,7 +65,6 @@ public class CategoryTabStrip extends HorizontalScrollView {
         setFillViewport(true);
         setWillNotDraw(false);
 
-        // ±êÇ©ÈİÆ÷
         tabsContainer = new LinearLayout(context);
         tabsContainer.setOrientation(LinearLayout.HORIZONTAL);
         tabsContainer.setLayoutParams(new LayoutParams(
@@ -75,37 +77,43 @@ public class CategoryTabStrip extends HorizontalScrollView {
 
         defaultTabLayoutParams = new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-        // »æÖÆ¸ßÁÁÇøÓò×÷Îª»¬¶¯·ÖÒ³Ö¸Ê¾Æ÷
+
+        // ç»˜åˆ¶é«˜äº®åŒºåŸŸä½œä¸ºæ»‘åŠ¨åˆ†é¡µæŒ‡ç¤ºå™¨
         indicator = getResources()
                 .getDrawable(R.drawable.bg_category_indicator);
-        // ×óÓÒ±ß½çÒõÓ°Ğ§¹û
+        // å·¦å³è¾¹ç•Œé˜´å½±æ•ˆæœ
         left_edge = getResources()
                 .getDrawable(R.drawable.ic_category_left_edge);
         right_edge = getResources().getDrawable(
                 R.drawable.ic_category_right_edge);
     }
 
-    // °ó¶¨ÓëCategoryTabStrip¿Ø¼ş¶ÔÓ¦µÄViewPager¿Ø¼ş£¬ÊµÏÖÁª¶¯
+    // ç»‘å®šä¸CategoryTabStripæ§ä»¶å¯¹åº”çš„ViewPageræ§ä»¶ï¼Œå®ç°è”åŠ¨
     public void setViewPager(ViewPager pager) {
         this.pager = pager;
+
         if (pager.getAdapter() == null) {
             throw new IllegalStateException(
                     "ViewPager does not have adapter instance.");
         }
+
         pager.setOnPageChangeListener(pageListener);
+
         notifyDataSetChanged();
     }
 
-    // µ±¸½¼ÓÔÚViewPagerÊÊÅäÆ÷ÉÏµÄÊı¾İ·¢Éú±ä»¯Ê±,Ó¦¸Ãµ÷ÓÃ¸Ã·½·¨Í¨ÖªCategoryTabStripË¢ĞÂÊı¾İ
+    // å½“é™„åŠ åœ¨ViewPageré€‚é…å™¨ä¸Šçš„æ•°æ®å‘ç”Ÿå˜åŒ–æ—¶,åº”è¯¥è°ƒç”¨è¯¥æ–¹æ³•é€šçŸ¥CategoryTabStripåˆ·æ–°æ•°æ®
     public void notifyDataSetChanged() {
         tabsContainer.removeAllViews();
+
         tabCount = pager.getAdapter().getCount();
+
         for (int i = 0; i < tabCount; i++) {
             addTab(i, pager.getAdapter().getPageTitle(i).toString());
         }
+
     }
 
-    // Ìí¼ÓÒ»¸ö±êÇ©µ½µ¼º½²Ëµ¥
     private void addTab(final int position, String title) {
         ViewGroup tab = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.category_tab, this, false);
@@ -123,10 +131,11 @@ public class CategoryTabStrip extends HorizontalScrollView {
                 pager.setCurrentItem(position);
             }
         });
+
         tabsContainer.addView(tab, position, defaultTabLayoutParams);
     }
 
-    // ¼ÆËã»¬¶¯¹ı³ÌÖĞ¾ØĞÎ¸ßÁÁÇøÓòµÄÉÏÏÂ×óÓÒÎ»ÖÃ
+    // è®¡ç®—æ»‘åŠ¨è¿‡ç¨‹ä¸­çŸ©å½¢é«˜äº®åŒºåŸŸçš„ä¸Šä¸‹å·¦å³ä½ç½®
     private void calculateIndicatorRect(Rect rect) {
         ViewGroup currentTab = (ViewGroup) tabsContainer
                 .getChildAt(currentPosition);
@@ -156,21 +165,23 @@ public class CategoryTabStrip extends HorizontalScrollView {
                 ((int) width) + getPaddingLeft(), currentTab.getTop()
                         + getPaddingTop() + category_text.getTop()
                         + category_text.getHeight());
+
     }
 
-    // ¼ÆËã¹ö¶¯·¶Î§
+    // è®¡ç®—æ»šåŠ¨èŒƒå›´
     private int getScrollRange() {
         return getChildCount() > 0 ? Math.max(0, getChildAt(0).getWidth()
                 - getWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
-    // CategoryTabStripÓëViewPagerÁª¶¯Âß¼­
     private void scrollToChild(int position, int offset) {
+
         if (tabCount == 0) {
             return;
         }
 
         calculateIndicatorRect(indicatorRect);
+
         int newScrollX = lastScrollX;
         if (indicatorRect.left < getScrollX() + scrollOffset) {
             newScrollX = indicatorRect.left - scrollOffset;
@@ -182,21 +193,20 @@ public class CategoryTabStrip extends HorizontalScrollView {
             lastScrollX = newScrollX;
             scrollTo(newScrollX, 0);
         }
+
     }
 
-    // ×Ô¶¨Òå»æÍ¼
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        // »æÖÆ¸ßÁÁ±³¾°¾ØĞÎºì¿ò
         calculateIndicatorRect(indicatorRect);
+
         if (indicator != null) {
             indicator.setBounds(indicatorRect);
             indicator.draw(canvas);
         }
 
-        // »æÖÆ±³¾°ºì¿òÄÚ±êÇ©ÎÄ±¾
         int i = 0;
         while (i < tabsContainer.getChildCount()) {
             if (i < currentPosition - 1 || i > currentPosition + 1) {
@@ -235,7 +245,6 @@ public class CategoryTabStrip extends HorizontalScrollView {
             }
         }
 
-        // »æÖÆ×óÓÒ±ß½çÒõÓ°Ğ§¹û
         i = canvas.save();
         int top = getScrollX();
         int height = getHeight();
@@ -262,6 +271,7 @@ public class CategoryTabStrip extends HorizontalScrollView {
     }
 
     private class PageListener implements OnPageChangeListener {
+
         @Override
         public void onPageScrolled(int position, float positionOffset,
                 int positionOffsetPixels) {
@@ -270,17 +280,19 @@ public class CategoryTabStrip extends HorizontalScrollView {
 
             scrollToChild(position, (int) (positionOffset * tabsContainer
                     .getChildAt(position).getWidth()));
+
             invalidate();
+
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
             if (state == ViewPager.SCROLL_STATE_IDLE) {
                 if (pager.getCurrentItem() == 0) {
-                    // »¬¶¯µ½×î×ó±ß
+                    // æ»‘åŠ¨åˆ°æœ€å·¦è¾¹
                     scrollTo(0, 0);
                 } else if (pager.getCurrentItem() == tabCount - 1) {
-                    // »¬¶¯µ½×îÓÒ±ß
+                    // æ»‘åŠ¨åˆ°æœ€å³è¾¹
                     scrollTo(getScrollRange(), 0);
                 } else {
                     scrollToChild(pager.getCurrentItem(), 0);
@@ -290,6 +302,9 @@ public class CategoryTabStrip extends HorizontalScrollView {
 
         @Override
         public void onPageSelected(int position) {
+
         }
+
     }
+
 }

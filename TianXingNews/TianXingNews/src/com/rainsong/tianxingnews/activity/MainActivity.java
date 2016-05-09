@@ -1,4 +1,4 @@
-package com.rainsong.tianxingnews;
+package com.rainsong.tianxingnews.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.rainsong.tianxingnews.R;
+import com.rainsong.tianxingnews.fragment.NewsFragment;
+import com.rainsong.tianxingnews.widget.CategoryTabStrip;
+
 public class MainActivity extends FragmentActivity {
-    private CategoryTabStrip tabs;
+    private com.rainsong.tianxingnews.widget.CategoryTabStrip tabs;
     private ViewPager pager;
     private MyPagerAdapter adapter;
 

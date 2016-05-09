@@ -1,4 +1,4 @@
-package com.rainsong.tianxingnews;
+package com.rainsong.tianxingnews.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
