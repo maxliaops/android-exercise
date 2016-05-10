@@ -2,6 +2,7 @@ package com.rainsong.tianxingnews.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +12,12 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.baidu.apistore.sdk.ApiCallBack;
+import com.baidu.apistore.sdk.ApiStoreSDK;
+import com.baidu.apistore.sdk.network.Parameters;
+
 public class NewsFragment extends Fragment {
+    private static final String TAG = "NewsFragment";
 
     private static final String ARG_POSITION = "position";
 
@@ -30,6 +36,10 @@ public class NewsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         position = getArguments().getInt(ARG_POSITION);
+
+        if (position == 0) {
+            apiTest();
+        }
     }
 
     @Override
@@ -57,4 +67,35 @@ public class NewsFragment extends Fragment {
         return fl;
     }
 
+    private void apiTest() {
+        Log.i(TAG, "apiTest()");
+        Parameters para = new Parameters();
+        para.put("num", "10");
+        para.put("page", "1");
+
+        ApiStoreSDK.execute("http://apis.baidu.com/txapi/social/social",
+                ApiStoreSDK.GET, para, new ApiCallBack() {
+
+                    @Override
+                    public void onSuccess(int status, String responseString) {
+                        Log.i(TAG, "onSuccess: " + responseString);
+                        // mTextView.setText(responseString);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG, "onComplete");
+                    }
+
+                    @Override
+                    public void onError(int status, String responseString,
+                            Exception e) {
+                        Log.i(TAG, "onError, status: " + status);
+                        Log.i(TAG,
+                                "errMsg: " + (e == null ? "" : e.getMessage()));
+                    }
+
+                });
+
+    }
 }
