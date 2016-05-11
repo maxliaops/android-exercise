@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.baidu.apistore.sdk.ApiCallBack;
 import com.baidu.apistore.sdk.ApiStoreSDK;
 import com.baidu.apistore.sdk.network.Parameters;
+import com.rainsong.tianxingnews.entity.NewsListEntity;
+import com.rainsong.tianxingnews.util.GsonUtils;
 
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
@@ -79,6 +81,9 @@ public class NewsFragment extends Fragment {
                     @Override
                     public void onSuccess(int status, String responseString) {
                         Log.i(TAG, "onSuccess: " + responseString);
+                        NewsListEntity newsListEntity = (NewsListEntity) GsonUtils
+                                .getEntity(responseString, NewsListEntity.class);
+                        Log.i(TAG, "NewsListEntity: " + newsListEntity.newslist.size());
                         // mTextView.setText(responseString);
                     }
 
