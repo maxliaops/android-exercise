@@ -8,4 +8,11 @@
     <dimen name="head_size">28.0dip</dimen>
     <dimen name="top_category_height">40.0dip</dimen>
     <dimen name="category_tab_text">15.0sp</dimen>
+    <dimen name="text_size_16">16.0sp</dimen>
+    <dimen name="text_size_28">28.0sp</dimen>
+    <dimen name="text_size_30">30.0sp</dimen>
+    <dimen name="text_size_large">22.0sp</dimen>
+    <dimen name="text_size_medium">18.0sp</dimen>
+    <dimen name="text_size_micro">12.0sp</dimen>
+    <dimen name="text_size_small">14.0sp</dimen>
 </resources>

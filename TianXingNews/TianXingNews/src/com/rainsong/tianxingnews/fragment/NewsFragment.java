@@ -1,21 +1,23 @@
 package com.rainsong.tianxingnews.fragment;
 
+import java.util.ArrayList;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.baidu.apistore.sdk.ApiCallBack;
 import com.baidu.apistore.sdk.ApiStoreSDK;
 import com.baidu.apistore.sdk.network.Parameters;
+import com.rainsong.tianxingnews.R;
+import com.rainsong.tianxingnews.adapter.NewsAdapter;
 import com.rainsong.tianxingnews.entity.NewsListEntity;
+import com.rainsong.tianxingnews.entity.NewsListEntity.NewsEntity;
 import com.rainsong.tianxingnews.util.GsonUtils;
 
 public class NewsFragment extends Fragment {
@@ -23,6 +25,10 @@ public class NewsFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";
 
+    private Context mContext;
+    private ListView mListView;
+    private NewsAdapter mAdapter;
+    private ArrayList<NewsEntity> mNewsList = null;
     private int position;
 
     public static NewsFragment newInstance(int position) {
@@ -39,34 +45,32 @@ public class NewsFragment extends Fragment {
 
         position = getArguments().getInt(ARG_POSITION);
 
-        if (position == 0) {
-            apiTest();
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        mContext = getActivity();
 
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT);
+        mListView = (ListView) view.findViewById(R.id.list);
+        Log.d(TAG, "onCreateView(): mListView=" + mListView);
 
-        FrameLayout fl = new FrameLayout(getActivity());
-        fl.setLayoutParams(params);
+        if (position == 0) {
+            apiTest();
+        }
+        return view;
+    }
 
-        final int margin = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
-                        .getDisplayMetrics());
-
-        TextView v = new TextView(getActivity());
-        params.setMargins(margin, margin, margin, margin);
-        v.setLayoutParams(params);
-        v.setLayoutParams(params);
-        v.setGravity(Gravity.CENTER);
-        v.setText("PAGE " + (position + 1));
-
-        fl.addView(v);
-        return fl;
+    private void setAdapter(ArrayList<NewsEntity> newsList) {
+        if (mAdapter == null) {
+            mAdapter = new NewsAdapter(mContext, newsList);
+            Log.d(TAG, "setAdapter(): mListView=" + mListView);
+            mListView.setAdapter(mAdapter);
+        } else {
+            mAdapter.updateData(newsList);
+        }
     }
 
     private void apiTest() {
@@ -83,8 +87,13 @@ public class NewsFragment extends Fragment {
                         Log.i(TAG, "onSuccess: " + responseString);
                         NewsListEntity newsListEntity = (NewsListEntity) GsonUtils
                                 .getEntity(responseString, NewsListEntity.class);
-                        Log.i(TAG, "NewsListEntity: " + newsListEntity.newslist.size());
+                        Log.i(TAG,
+                                "NewsListEntity: "
+                                        + newsListEntity.newslist.size());
                         // mTextView.setText(responseString);
+                        mNewsList = new ArrayList<NewsEntity>();
+                        mNewsList.addAll(newsListEntity.newslist);
+                        setAdapter(mNewsList);
                     }
 
                     @Override
