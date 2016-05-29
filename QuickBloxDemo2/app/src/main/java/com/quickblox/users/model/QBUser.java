@@ -3,7 +3,6 @@ package com.quickblox.users.model;
 import com.qb.gson.annotations.SerializedName;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.model.QBEntity;
-import com.quickblox.users.helper.CustomDataObjectParserHelper;
 import java.util.Date;
 
 public class QBUser extends QBEntity {
@@ -166,14 +165,6 @@ public class QBUser extends QBEntity {
 
    public String getCustomData() {
       return this.customData;
-   }
-
-   public Object getCustomDataAsObject() {
-      return CustomDataObjectParserHelper.parseStringToObject(this.customDataClass, this.customData);
-   }
-
-   public void setCustomDataAsObject(Object customDataObject) {
-      this.customData = CustomDataObjectParserHelper.parseCustomDataObjectToString(customDataObject);
    }
 
    public void setCustomDataClass(Class customDataClass) {

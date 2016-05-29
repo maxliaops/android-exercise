@@ -8,11 +8,11 @@ package com.quickblox.chat;
 import android.content.Context;
 import android.os.Bundle;
 import com.quickblox.chat.JIDHelper;
-import com.quickblox.chat.QBGroupChatManager;
+//import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.QBMessageStatusesManager;
 import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.QBPrivacyListsManager;
-import com.quickblox.chat.QBPrivateChatManager;
+//import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.QBReconnectionManager;
 import com.quickblox.chat.QBRoster;
 import com.quickblox.chat.QBSystemMessagesManager;
@@ -20,26 +20,26 @@ import com.quickblox.chat.QBVideoChatWebRTCSignalingManager;
 import com.quickblox.chat.listeners.QBSubscriptionListener;
 import com.quickblox.chat.model.MobileV3IQ;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
+//import com.quickblox.chat.model.QBDialog;
+//import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.model.QBChatMessageExtension.Provider;
-import com.quickblox.chat.query.QueryCreateMessage;
-import com.quickblox.chat.query.QueryDeleteMessage;
-import com.quickblox.chat.query.QueryDeleteMessages;
-import com.quickblox.chat.query.QueryGetCountDialogs;
-import com.quickblox.chat.query.QueryGetCountMessage;
-import com.quickblox.chat.query.QueryGetDialogs;
-import com.quickblox.chat.query.QueryGetMessages;
-import com.quickblox.chat.query.QueryGetUnreadMessages;
-import com.quickblox.chat.query.QueryUpdateMessage;
+//import com.quickblox.chat.query.QueryCreateMessage;
+//import com.quickblox.chat.query.QueryDeleteMessage;
+//import com.quickblox.chat.query.QueryDeleteMessages;
+//import com.quickblox.chat.query.QueryGetCountDialogs;
+//import com.quickblox.chat.query.QueryGetCountMessage;
+//import com.quickblox.chat.query.QueryGetDialogs;
+//import com.quickblox.chat.query.QueryGetMessages;
+//import com.quickblox.chat.query.QueryGetUnreadMessages;
+//import com.quickblox.chat.query.QueryUpdateMessage;
 import com.quickblox.chat.utils.ThreadTask;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBRequestCanceler;
+//import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.Lo;
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.core.request.QBRequestGetBuilder;
+//import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.server.BaseService;
 import com.quickblox.users.model.QBUser;
 import java.io.IOException;
@@ -86,8 +86,8 @@ public class QBChatService extends BaseService {
     private static String defaultResource;
     private QBUser currentUser;
     private QBRoster roster;
-    private QBPrivateChatManager privateChatManager;
-    private QBGroupChatManager groupChatManager;
+//    private QBPrivateChatManager privateChatManager;
+//    private QBGroupChatManager groupChatManager;
     private QBMessageStatusesManager statusesManager;
     private QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager;
     private QBPrivacyListsManager privacyListsManager;
@@ -228,8 +228,8 @@ public class QBChatService extends BaseService {
     }
 
     private void initStreamManagementListeners() {
-        this.connection.addStanzaAcknowledgedListener(this.getPrivateChatManager());
-        this.connection.addStanzaAcknowledgedListener(this.getGroupChatManager());
+//        this.connection.addStanzaAcknowledgedListener(this.getPrivateChatManager());
+//        this.connection.addStanzaAcknowledgedListener(this.getGroupChatManager());
     }
 
     public void login(QBUser user, QBEntityCallback callback) {
@@ -349,9 +349,9 @@ public class QBChatService extends BaseService {
         this.connection = null;
         this.roster = null;
         this.currentUser = null;
-        this.privateChatManager = null;
+//        this.privateChatManager = null;
         this.videoChatWebRTCSignalingManager = null;
-        this.groupChatManager = null;
+//        this.groupChatManager = null;
         this.privacyListsManager = null;
         this.pingManager = null;
         this.statusesManager = null;
@@ -360,15 +360,15 @@ public class QBChatService extends BaseService {
     }
 
     private void clearStreamManagementListeners() {
-        if(this.privateChatManager != null) {
-            this.privateChatManager.clear();
-            this.connection.removeStanzaAcknowledgedListener(this.privateChatManager);
-        }
-
-        if(this.groupChatManager != null) {
-            this.groupChatManager.clear();
-            this.connection.removeStanzaAcknowledgedListener(this.groupChatManager);
-        }
+//        if(this.privateChatManager != null) {
+//            this.privateChatManager.clear();
+//            this.connection.removeStanzaAcknowledgedListener(this.privateChatManager);
+//        }
+//
+//        if(this.groupChatManager != null) {
+//            this.groupChatManager.clear();
+//            this.connection.removeStanzaAcknowledgedListener(this.groupChatManager);
+//        }
 
     }
 
@@ -386,13 +386,13 @@ public class QBChatService extends BaseService {
         return this.roster;
     }
 
-    public synchronized QBPrivateChatManager getPrivateChatManager() {
-        if(this.isLoggedIn() && this.privateChatManager == null) {
-            this.privateChatManager = QBPrivateChatManager.getInstanceFor(this.connection);
-        }
-
-        return this.privateChatManager;
-    }
+//    public synchronized QBPrivateChatManager getPrivateChatManager() {
+//        if(this.isLoggedIn() && this.privateChatManager == null) {
+//            this.privateChatManager = QBPrivateChatManager.getInstanceFor(this.connection);
+//        }
+//
+//        return this.privateChatManager;
+//    }
 
     public synchronized QBMessageStatusesManager getMessageStatusesManager() {
         if(this.isLoggedIn() && this.statusesManager == null) {
@@ -402,13 +402,13 @@ public class QBChatService extends BaseService {
         return this.statusesManager;
     }
 
-    public synchronized QBGroupChatManager getGroupChatManager() {
-        if(this.isLoggedIn() && this.groupChatManager == null) {
-            this.groupChatManager = QBGroupChatManager.getInstanceFor(this.connection);
-        }
-
-        return this.groupChatManager;
-    }
+//    public synchronized QBGroupChatManager getGroupChatManager() {
+//        if(this.isLoggedIn() && this.groupChatManager == null) {
+//            this.groupChatManager = QBGroupChatManager.getInstanceFor(this.connection);
+//        }
+//
+//        return this.groupChatManager;
+//    }
 
     public synchronized QBVideoChatWebRTCSignalingManager getVideoChatWebRTCSignalingManager() {
         if(this.isLoggedIn() && this.videoChatWebRTCSignalingManager == null) {
@@ -533,101 +533,101 @@ public class QBChatService extends BaseService {
         return this.carbonManager.getCarbonsEnabled();
     }
 
-    public static QBRequestCanceler getChatDialogs(QBDialogType type, QBRequestGetBuilder requestBuilder, QBEntityCallback<ArrayList<QBDialog>> callback) {
-        QueryGetDialogs query = new QueryGetDialogs(type);
-        query.setRequestBuilder(requestBuilder);
-        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler getChatDialogs(QBDialogType type, QBRequestGetBuilder requestBuilder, QBEntityCallback<ArrayList<QBDialog>> callback) {
+//        QueryGetDialogs query = new QueryGetDialogs(type);
+//        query.setRequestBuilder(requestBuilder);
+//        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
+//    }
 
-    public static ArrayList<QBDialog> getChatDialogs(QBDialogType type, QBRequestGetBuilder requestBuilder, Bundle returnedBundle) throws QBResponseException {
-        QueryGetDialogs query = new QueryGetDialogs(type);
-        query.setRequestBuilder(requestBuilder);
-        return (ArrayList)query.perform(returnedBundle);
-    }
+//    public static ArrayList<QBDialog> getChatDialogs(QBDialogType type, QBRequestGetBuilder requestBuilder, Bundle returnedBundle) throws QBResponseException {
+//        QueryGetDialogs query = new QueryGetDialogs(type);
+//        query.setRequestBuilder(requestBuilder);
+//        return (ArrayList)query.perform(returnedBundle);
+//    }
 
-    public static Integer getChatDialogsCount(QBRequestGetBuilder requestBuilder, Bundle returnedBundle) throws QBResponseException {
-        QueryGetCountDialogs query = new QueryGetCountDialogs();
-        query.setRequestBuilder(requestBuilder);
-        return (Integer)query.perform(returnedBundle);
-    }
+//    public static Integer getChatDialogsCount(QBRequestGetBuilder requestBuilder, Bundle returnedBundle) throws QBResponseException {
+//        QueryGetCountDialogs query = new QueryGetCountDialogs();
+//        query.setRequestBuilder(requestBuilder);
+//        return (Integer)query.perform(returnedBundle);
+//    }
 
-    public static QBRequestCanceler getChatDialogsCount(QBRequestGetBuilder requestBuilder, QBEntityCallback<Integer> callback) {
-        QueryGetCountDialogs query = new QueryGetCountDialogs();
-        query.setRequestBuilder(requestBuilder);
-        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler getChatDialogsCount(QBRequestGetBuilder requestBuilder, QBEntityCallback<Integer> callback) {
+//        QueryGetCountDialogs query = new QueryGetCountDialogs();
+//        query.setRequestBuilder(requestBuilder);
+//        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
+//    }
 
-    public static QBRequestCanceler getDialogMessages(QBDialog dialog, QBRequestGetBuilder requestBuilder, QBEntityCallback<ArrayList<QBChatMessage>> callback) {
-        QueryGetMessages query = new QueryGetMessages(dialog, requestBuilder);
-        query.setRequestBuilder(requestBuilder);
-        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler getDialogMessages(QBDialog dialog, QBRequestGetBuilder requestBuilder, QBEntityCallback<ArrayList<QBChatMessage>> callback) {
+//        QueryGetMessages query = new QueryGetMessages(dialog, requestBuilder);
+//        query.setRequestBuilder(requestBuilder);
+//        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
+//    }
 
-    public static ArrayList<QBChatMessage> getDialogMessages(QBDialog dialog, QBRequestGetBuilder requestBuilder, Bundle returnedBundle) throws QBResponseException {
-        QueryGetMessages query = new QueryGetMessages(dialog, requestBuilder);
-        query.setRequestBuilder(requestBuilder);
-        return (ArrayList)query.perform(returnedBundle);
-    }
+//    public static ArrayList<QBChatMessage> getDialogMessages(QBDialog dialog, QBRequestGetBuilder requestBuilder, Bundle returnedBundle) throws QBResponseException {
+//        QueryGetMessages query = new QueryGetMessages(dialog, requestBuilder);
+//        query.setRequestBuilder(requestBuilder);
+//        return (ArrayList)query.perform(returnedBundle);
+//    }
 
-    public static QBRequestCanceler getDialogMessagesCount(String dialogID, QBEntityCallback<Integer> callback) {
-        QueryGetCountMessage query = new QueryGetCountMessage(dialogID);
-        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler getDialogMessagesCount(String dialogID, QBEntityCallback<Integer> callback) {
+//        QueryGetCountMessage query = new QueryGetCountMessage(dialogID);
+//        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
+//    }
 
-    public static Integer getDialogMessagesCount(String dialogID, Bundle returnedBundle) throws QBResponseException {
-        QueryGetCountMessage query = new QueryGetCountMessage(dialogID);
-        return (Integer)query.perform(returnedBundle);
-    }
+//    public static Integer getDialogMessagesCount(String dialogID, Bundle returnedBundle) throws QBResponseException {
+//        QueryGetCountMessage query = new QueryGetCountMessage(dialogID);
+//        return (Integer)query.perform(returnedBundle);
+//    }
 
-    public static QBRequestCanceler markMessagesAsRead(String dialogId, StringifyArrayList<String> messageIds, QBEntityCallback<Void> callback) {
-        QueryUpdateMessage updateDialogMessage = new QueryUpdateMessage(dialogId, messageIds);
-        return new QBRequestCanceler(updateDialogMessage.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler markMessagesAsRead(String dialogId, StringifyArrayList<String> messageIds, QBEntityCallback<Void> callback) {
+//        QueryUpdateMessage updateDialogMessage = new QueryUpdateMessage(dialogId, messageIds);
+//        return new QBRequestCanceler(updateDialogMessage.performAsyncWithCallback(callback));
+//    }
 
-    public static Void markMessagesAsRead(String dialogId, StringifyArrayList<String> messageIds) throws QBResponseException {
-        QueryUpdateMessage updateDialogMessage = new QueryUpdateMessage(dialogId, messageIds);
-        return (Void)updateDialogMessage.perform((Bundle)null);
-    }
+//    public static Void markMessagesAsRead(String dialogId, StringifyArrayList<String> messageIds) throws QBResponseException {
+//        QueryUpdateMessage updateDialogMessage = new QueryUpdateMessage(dialogId, messageIds);
+//        return (Void)updateDialogMessage.perform((Bundle)null);
+//    }
 
-    public static QBRequestCanceler deleteMessage(String messageId, QBEntityCallback<Void> callback) {
-        QueryDeleteMessage queryDeleteDialogMessage = new QueryDeleteMessage(messageId);
-        return new QBRequestCanceler(queryDeleteDialogMessage.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler deleteMessage(String messageId, QBEntityCallback<Void> callback) {
+//        QueryDeleteMessage queryDeleteDialogMessage = new QueryDeleteMessage(messageId);
+//        return new QBRequestCanceler(queryDeleteDialogMessage.performAsyncWithCallback(callback));
+//    }
 
-    public static Void deleteMessage(String messageId) throws QBResponseException {
-        QueryDeleteMessage queryDeleteDialogMessage = new QueryDeleteMessage(messageId);
-        return (Void)queryDeleteDialogMessage.perform((Bundle)null);
-    }
+//    public static Void deleteMessage(String messageId) throws QBResponseException {
+//        QueryDeleteMessage queryDeleteDialogMessage = new QueryDeleteMessage(messageId);
+//        return (Void)queryDeleteDialogMessage.perform((Bundle)null);
+//    }
 
-    public static QBRequestCanceler deleteMessages(Set<String> messageIDs, QBEntityCallback<Void> callback) {
-        QueryDeleteMessages queryDeleteDialogMessages = new QueryDeleteMessages(messageIDs);
-        return new QBRequestCanceler(queryDeleteDialogMessages.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler deleteMessages(Set<String> messageIDs, QBEntityCallback<Void> callback) {
+//        QueryDeleteMessages queryDeleteDialogMessages = new QueryDeleteMessages(messageIDs);
+//        return new QBRequestCanceler(queryDeleteDialogMessages.performAsyncWithCallback(callback));
+//    }
 
-    public static Void deleteMessages(Set<String> messageIDs) throws QBResponseException {
-        QueryDeleteMessages queryDeleteDialogMessages = new QueryDeleteMessages(messageIDs);
-        return (Void)queryDeleteDialogMessages.perform((Bundle)null);
-    }
+//    public static Void deleteMessages(Set<String> messageIDs) throws QBResponseException {
+//        QueryDeleteMessages queryDeleteDialogMessages = new QueryDeleteMessages(messageIDs);
+//        return (Void)queryDeleteDialogMessages.perform((Bundle)null);
+//    }
 
-    public static QBRequestCanceler createMessage(QBChatMessage message, QBEntityCallback<QBChatMessage> callback) {
-        QueryCreateMessage query = new QueryCreateMessage(message);
-        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler createMessage(QBChatMessage message, QBEntityCallback<QBChatMessage> callback) {
+//        QueryCreateMessage query = new QueryCreateMessage(message);
+//        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
+//    }
 
-    public static QBChatMessage createMessage(QBChatMessage message) throws QBResponseException {
-        QueryCreateMessage query = new QueryCreateMessage(message);
-        return (QBChatMessage)query.perform((Bundle)null);
-    }
+//    public static QBChatMessage createMessage(QBChatMessage message) throws QBResponseException {
+//        QueryCreateMessage query = new QueryCreateMessage(message);
+//        return (QBChatMessage)query.perform((Bundle)null);
+//    }
 
-    public static QBRequestCanceler getTotalUnreadMessagesCount(Set<String> dialogIDs, QBEntityCallback<Integer> callback) {
-        QueryGetUnreadMessages query = new QueryGetUnreadMessages(dialogIDs);
-        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
-    }
+//    public static QBRequestCanceler getTotalUnreadMessagesCount(Set<String> dialogIDs, QBEntityCallback<Integer> callback) {
+//        QueryGetUnreadMessages query = new QueryGetUnreadMessages(dialogIDs);
+//        return new QBRequestCanceler(query.performAsyncWithCallback(callback));
+//    }
 
-    public static Integer getTotalUnreadMessagesCount(Set<String> dialogIDs, Bundle returnedBundle) throws QBResponseException {
-        QueryGetUnreadMessages query = new QueryGetUnreadMessages(dialogIDs);
-        return (Integer)query.perform(returnedBundle);
-    }
+//    public static Integer getTotalUnreadMessagesCount(Set<String> dialogIDs, Bundle returnedBundle) throws QBResponseException {
+//        QueryGetUnreadMessages query = new QueryGetUnreadMessages(dialogIDs);
+//        return (Integer)query.perform(returnedBundle);
+//    }
 
     static {
         defaultConnectionTimeout = (long)XMPPTCPConnectionConfiguration.DEFAULT_CONNECT_TIMEOUT;
