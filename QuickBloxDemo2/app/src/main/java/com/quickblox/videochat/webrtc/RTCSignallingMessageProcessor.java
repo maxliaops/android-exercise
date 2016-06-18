@@ -92,8 +92,8 @@ public final class RTCSignallingMessageProcessor implements QBVideoChatSignaling
     }
 
     private void processCommand(QBUser fromUser, QBChatMessageExtension msgExtension, QBSignalCMD signalingType, QBRTCSessionDescription sessionDescription) {
-        switch(signalingType.ordinal()) {
-        case 1:
+        switch(signalingType) {
+        case CALL:
             SessionDescription sdp = new SessionDescription(Type.OFFER, msgExtension.getProperty(QBSignalField.SDP.getValue()));
             if(Decorators.logIfNull(sdp, "Session description was not set properly in signaling message")) {
                 return;
@@ -101,7 +101,7 @@ public final class RTCSignallingMessageProcessor implements QBVideoChatSignaling
 
             this.notifyOnCall(sessionDescription, fromUser, sdp);
             break;
-        case 2:
+        case ACCEPT_CALL:
             SessionDescription sdpAccept = new SessionDescription(Type.ANSWER, msgExtension.getProperty(QBSignalField.SDP.getValue()));
             if(Decorators.logIfNull(sdpAccept, "Session description was not set properly in signaling message")) {
                 return;
@@ -109,10 +109,10 @@ public final class RTCSignallingMessageProcessor implements QBVideoChatSignaling
 
             this.notifyAcceptCall(sessionDescription, fromUser, sdpAccept);
             break;
-        case 3:
+        case REJECT_CALL:
             this.notifyRejectCall(fromUser, sessionDescription);
             break;
-        case 4:
+        case CANDITATE:
             try {
                 int iceCandidates1 = Integer.parseInt(msgExtension.getProperty(QBCandidate.SDP_MLINE_INDEX.getValue()));
                 String sdpMid = msgExtension.getProperty(QBCandidate.SDP_MID.getValue());
@@ -125,7 +125,7 @@ public final class RTCSignallingMessageProcessor implements QBVideoChatSignaling
                 Decorators.logIfNull((Object)null, "Field \'Ice candidates\' was not set properly in signaling message");
             }
             break;
-        case 5:
+        case CANDITATES:
             List iceCandidates = (List)msgExtension.getComplexProperty(QBSignalField.CANDIDATES.getValue());
             if(CollectionsUtil.isEmpty(iceCandidates)) {
                 Decorators.logIfNull((Object)null, "Field \'Ice candidates\' was not set properly in signaling message");
@@ -134,11 +134,9 @@ public final class RTCSignallingMessageProcessor implements QBVideoChatSignaling
 
             this.notifyCandidates(sessionDescription, fromUser, iceCandidates);
             break;
-        case 6:
+        case HANG_UP:
             this.notifyStopCall(fromUser, sessionDescription);
-        case 7:
-        case 8:
-        case 9:
+
         }
 
     }

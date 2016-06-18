@@ -197,6 +197,7 @@ public class ListUsersActivity extends Activity {
             resultReceived = true;
             startCallActivity(user.getLogin());
         } else {
+            showProgress(true);
             Log.d(TAG, "JID:" + JIDHelper.INSTANCE.getJid(user) + " password:" + user.getPassword());
             chatService.login(user, new QBEntityCallback<Void>() {
 
