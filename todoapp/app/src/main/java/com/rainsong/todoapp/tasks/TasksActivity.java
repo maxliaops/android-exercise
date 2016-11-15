@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.rainsong.todoapp.R;
+import com.rainsong.todoapp.util.ActivityUtils;
 
 /**
  * Created by maxliaops on 16-11-14.
@@ -17,6 +18,14 @@ public class TasksActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
+
+        TasksFragment tasksFragment = (TasksFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.contentFrame);
+        if (tasksFragment == null) {
+            tasksFragment = new TasksFragment();
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), tasksFragment,
+                    R.id.contentFrame);
+        }
     }
 
     @Override
