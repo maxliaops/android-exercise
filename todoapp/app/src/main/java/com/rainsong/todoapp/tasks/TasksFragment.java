@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.rainsong.todoapp.R;
 import com.rainsong.todoapp.data.Task;
+import com.rainsong.todoapp.data.source.TasksDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,8 @@ public class TasksFragment extends Fragment {
 
     private TextView mFilteringLabelView;
 
+    private TasksDataSource mTasksDataSource;
+
     private TaskItemListener mItemListener = new TaskItemListener() {
 
         @Override
@@ -66,6 +69,7 @@ public class TasksFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTasksDataSource = TasksDataSource.getInstance();
         mListAdapter = new TasksAdapter(new ArrayList<Task>(0), mItemListener);
     }
 
@@ -123,12 +127,22 @@ public class TasksFragment extends Fragment {
     }
 
     private void loadTasks() {
-        Task task = new Task("title1", "description1");
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(task);
+        mTasksDataSource.getTasks(new TasksDataSource.LoadTasksCallback() {
+            @Override
+            public void onTasksLoaded(List<Task> tasks) {
+                if(tasks.isEmpty()) {
+                    showNoTasks();
+                } else {
+                    showTasks(tasks);
+                    showAllFilterLabel();
+                }
+            }
 
-        showTasks(tasks);
-        showAllFilterLabel();
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+        });
     }
 
     public void showTasks(List<Task> tasks) {
