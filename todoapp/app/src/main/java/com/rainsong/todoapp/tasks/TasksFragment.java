@@ -69,7 +69,7 @@ public class TasksFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTasksDataSource = TasksDataSource.getInstance();
+        mTasksDataSource = TasksDataSource.getInstance(getContext());
         mListAdapter = new TasksAdapter(new ArrayList<Task>(0), mItemListener);
     }
 
