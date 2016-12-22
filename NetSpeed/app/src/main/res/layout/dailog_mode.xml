@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="#ffffffff"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff6699ff"
+        android:gravity="center"
+        android:padding="10.0dip"
+        android:text="显示模式"
+        android:textColor="#ff000000"
+        android:textSize="25.0sp"/>
+
+    <com.anzmo.netspeed.DialogItemView
+        android:id="@id/div01"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="div01"/>
+
+    <com.anzmo.netspeed.DialogItemView
+        android:id="@id/div02"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="div02"/>
+
+    <com.anzmo.netspeed.DialogItemView
+        android:id="@id/div03"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="div03"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4.0dip"
+        android:paddingLeft="4.0dip"
+        android:paddingRight="4.0dip">
+
+        <TextView
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2.0dip"
+            android:layout_weight="1.0"
+            android:background="@drawable/button"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="cancel"
+            android:padding="10.0dip"
+            android:text="取消"
+            android:textColor="#ffffffff"
+            android:textSize="20.0sp"/>
+
+        <TextView
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2.0dip"
+            android:layout_weight="1.0"
+            android:background="@drawable/button"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="ok04"
+            android:padding="10.0dip"
+            android:text="确定"
+            android:textColor="#ffffffff"
+            android:textSize="20.0sp"/>
+    </LinearLayout>
+</LinearLayout>

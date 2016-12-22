@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@id/ll_floatwindow"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/floatwindow">
+
+    <ImageView
+        android:id="@id/iv_floatwindow"
+        android:layout_width="15.0dip"
+        android:layout_height="fill_parent"
+        android:src="@drawable/wifi"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@id/tv_floatwindow_bg1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00M/s"
+            android:textSize="14.0sp"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@id/tv_floatwindow_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0.00B/s"
+            android:textColor="#ffffffff"
+            android:textSize="14.0sp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@id/tv_floatwindow_devide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="|"
+        android:textSize="14.0sp"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@id/tv_floatwindow_bg2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00M/s"
+            android:textSize="14.0sp"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@id/tv_floatwindow_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0.00B/s"
+            android:textColor="#ffffffff"
+            android:textSize="14.0sp"/>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:background="#ffffffff"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff6699ff"
+        android:gravity="center"
+        android:padding="10.0dip"
+        android:text="网速悬浮窗"
+        android:textColor="#ff000000"
+        android:textSize="25.0sp"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv01"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click01"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv02"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click02"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv03"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click03"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv04"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click04"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv05"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click05"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv06"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click06"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv07"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click07"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <com.anzmo.netspeed.SetItemView
+                android:id="@id/siv08"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="click08"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="#ff888888"/>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="10.0dip">
+
+                <TextView
+                    android:id="@id/tv_hint01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="温馨提示：如果无法显示桌面悬浮窗，请检查应用权限。"
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint01"
+                    android:text="小米手机："
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint01"
+                    android:layout_toRightOf="@id/tv_hint02"
+                    android:text="安全中心>授权管理>自启动管理>网速悬浮窗>允许"
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint03"
+                    android:layout_toRightOf="@id/tv_hint02"
+                    android:text="安全中心>授权管理>应用权限管理>网速悬浮窗>显示悬浮窗>允许"
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint05"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint04"
+                    android:text="华为手机："
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint06"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint04"
+                    android:layout_toRightOf="@id/tv_hint05"
+                    android:text="手机管家>权限管理>开机自动启动>网速悬浮窗>允许"
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint07"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint06"
+                    android:layout_toRightOf="@id/tv_hint05"
+                    android:text="手机管家>通知管理>悬浮窗管理>网速悬浮窗>允许"
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+
+                <TextView
+                    android:id="@id/tv_hint08"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hint07"
+                    android:text="其他品牌手机请参考上述方法。"
+                    android:textColor="#ff888888"
+                    android:textSize="11.0sp"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

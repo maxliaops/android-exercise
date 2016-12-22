@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="14.0dip">
+
+    <TextView
+        android:id="@id/tv_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="条目名称"
+        android:textColor="#ff000000"
+        android:textSize="18.0sp"/>
+
+    <ImageView
+        android:layout_width="20.0dip"
+        android:layout_height="20.0dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/unselect"/>
+
+    <ImageView
+        android:id="@id/iv_dialog"
+        android:layout_width="20.0dip"
+        android:layout_height="20.0dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/select"
+        android:visibility="invisible"/>
+</RelativeLayout>
