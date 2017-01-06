@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">MiShop</string>
+    <string name="app_name">小米商城</string>
+    <string name="home">首页</string>
+    <string name="category">分类</string>
+    <string name="discover">发现</string>
+    <string name="mine">我</string>
 </resources>
