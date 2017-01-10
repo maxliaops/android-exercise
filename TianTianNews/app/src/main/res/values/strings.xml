@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">天天新闻</string>
+
+    <string name="news">新闻</string>
+    <string name="video">视频</string>
+    <string name="discover">发现</string>
+    <string name="mine">我</string>
 </resources>
