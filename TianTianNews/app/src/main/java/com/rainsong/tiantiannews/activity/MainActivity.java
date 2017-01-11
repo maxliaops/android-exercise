@@ -1,15 +1,28 @@
 package com.rainsong.tiantiannews.activity;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.rainsong.tiantiannews.R;
+import com.rainsong.tiantiannews.fragment.DiscoverFragment;
+import com.rainsong.tiantiannews.fragment.TabNewsFragment;
+import com.rainsong.tiantiannews.fragment.TabVideoFragment;
+import com.rainsong.tiantiannews.fragment.UserCentralFragment;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar
         .OnTabSelectedListener {
+    private static final String TAG = "MainActivity";
+
     private BottomNavigationBar bottomNavigationBar;
+    private TabNewsFragment mTabNewsFragment;
+    private TabVideoFragment mTabVideoFragment;
+    private DiscoverFragment mDiscoverFragment;
+    private UserCentralFragment mUserCentralFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         setContentView(R.layout.activity_main);
 
         initView();
+        setDefaultFragment();
     }
 
     private void initView() {
@@ -47,9 +61,50 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .initialise();
     }
 
+    private void setDefaultFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        mTabNewsFragment = new TabNewsFragment();
+        transaction.replace(R.id.fragment_container, mTabNewsFragment);
+        transaction.commit();
+    }
+
     @Override
     public void onTabSelected(int position) {
-
+        Log.d(TAG, "onTabSelected() called with: " + "position = [" + position + "]");
+        FragmentManager fm = getSupportFragmentManager();
+        //开启事务
+        FragmentTransaction transaction = fm.beginTransaction();
+        switch (position) {
+            case 0:
+                if (mTabNewsFragment == null) {
+                    mTabNewsFragment = new TabNewsFragment();
+                }
+                transaction.replace(R.id.fragment_container, mTabNewsFragment);
+                break;
+            case 1:
+                if (mTabVideoFragment == null) {
+                    mTabVideoFragment = new TabVideoFragment();
+                }
+                transaction.replace(R.id.fragment_container, mTabVideoFragment);
+                break;
+            case 2:
+                if (mDiscoverFragment == null) {
+                    mDiscoverFragment = new DiscoverFragment();
+                }
+                transaction.replace(R.id.fragment_container, mDiscoverFragment);
+                break;
+            case 3:
+                if (mUserCentralFragment == null) {
+                    mUserCentralFragment = new UserCentralFragment();
+                }
+                transaction.replace(R.id.fragment_container, mUserCentralFragment);
+                break;
+            default:
+                break;
+        }
+        // 事务提交
+        transaction.commit();
     }
 
     @Override
