@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
             default:
                 break;
         }
+        transaction.addToBackStack(null);
         // 事务提交
         transaction.commit();
     }
