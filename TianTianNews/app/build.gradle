@@ -27,6 +27,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.3.0'
+    compile 'com.google.code.gson:gson:2.3.1'
     compile project(":pulltorefresh")
     testCompile 'junit:junit:4.12'
 }

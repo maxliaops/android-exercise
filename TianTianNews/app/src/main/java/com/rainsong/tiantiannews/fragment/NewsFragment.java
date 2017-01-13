@@ -1,17 +1,10 @@
 package com.rainsong.tiantiannews.fragment;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,12 +17,23 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.rainsong.tiantiannews.R;
+import com.rainsong.tiantiannews.entity.NewsListEntity;
+import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
+import com.rainsong.tiantiannews.util.GsonUtils;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -39,7 +43,7 @@ import java.util.LinkedList;
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
     private static final String ARG_CATAGORY = "catagory";
-    public static final String URL_NEWS = "http://v.juhe.cn/toutiao/index";
+    private static final String URL_NEWS = "http://v.juhe.cn/toutiao/index";
     private static final String JUHE_APPKEY = "4e1d849f4ee325ef117b324d2c834ff2";
 
     private String mCategory;
@@ -47,13 +51,7 @@ public class NewsFragment extends Fragment {
     private PullToRefreshListView mPullToRefreshListView;
     private ListView mActualListView;
     private ArrayAdapter<String> mAdapter;
-    private LinkedList<String> mListItems;
-
-    private String[] mStrings = {"John", "Michelle", "Amy", "Kim", "Mary",
-            "David", "Sunny", "James", "Maria", "Michael", "Sarah", "Robert",
-            "Lily", "William", "Jessica", "Paul", "Crystal", "Peter",
-            "Jennifer", "George", "Rachel", "Thomas", "Lisa", "Daniel", "Elizabeth",
-            "Kevin"};
+    private List<String> mListItems;
 
     public static NewsFragment newInstance(String category) {
         Log.d(TAG, "newInstance(): category=" + category);
@@ -98,7 +96,7 @@ public class NewsFragment extends Fragment {
         mActualListView = mPullToRefreshListView.getRefreshableView();
 
         mListItems = new LinkedList<String>();
-        mListItems.addAll(Arrays.asList(mStrings));
+//        mListItems.addAll(Arrays.asList(mStrings));
 
         mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
                 mListItems);
@@ -109,6 +107,8 @@ public class NewsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart(): category=" + mCategory);
+//        new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
     }
 
     private String httpGet(String targetUrl) {
@@ -139,6 +139,7 @@ public class NewsFragment extends Fragment {
             if (params.length == 0)
                 return null;
             String category = params[0];
+            Log.d(TAG, "GetNewsTask(): category=" + category);
 
             String targetUrl = URL_NEWS;
 
@@ -165,8 +166,15 @@ public class NewsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, "GetNewsTask(): result=" + result);
-            mListItems.addFirst("Added after refresh...");
+//            Log.d(TAG, "GetNewsTask(): result=" + result);
+            if(!TextUtils.isEmpty(result)) {
+                NewsListEntity newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
+                        NewsListEntity.class);
+                List<NewsEntity> newsList = newsListEntity.result.getData();
+                for(NewsEntity newsEntity : newsList) {
+                    mListItems.add(newsEntity.title);
+                }
+            }
             mAdapter.notifyDataSetChanged();
 
             // Call onRefreshComplete when the list has been refreshed.

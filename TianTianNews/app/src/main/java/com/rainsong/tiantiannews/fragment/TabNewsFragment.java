@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.media.CamcorderProfile.get;
+
 /**
  * Created by maxliaops on 17-1-10.
  */
@@ -61,21 +63,54 @@ public class TabNewsFragment extends Fragment {
 
         public NewsPagerAdapter(FragmentManager fm) {
             super(fm);
-            catalogs.add(getString(R.string.category_top));
-            catalogs.add(getString(R.string.category_shehui));
-            catalogs.add(getString(R.string.category_guonei));
-            catalogs.add(getString(R.string.category_guoji));
-            catalogs.add(getString(R.string.category_yule));
-            catalogs.add(getString(R.string.category_tiyu));
-            catalogs.add(getString(R.string.category_junshi));
-            catalogs.add(getString(R.string.category_keji));
-            catalogs.add(getString(R.string.category_caijing));
-            catalogs.add(getString(R.string.category_shishang));
+            catalogs.add("top");
+            catalogs.add("shehui");
+            catalogs.add("guonei");
+            catalogs.add("guoji");
+            catalogs.add("yule");
+            catalogs.add("tiyu");
+            catalogs.add("junshi");
+            catalogs.add("keji");
+            catalogs.add("caijing");
+            catalogs.add("shishang");
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return catalogs.get(position);
+            String category = catalogs.get(position);
+            String pageTitle;
+            switch (category) {
+                case "top":
+                    pageTitle = getString(R.string.category_top);
+                    break;
+                case "shehui":
+                    pageTitle = getString(R.string.category_shehui);
+                    break;
+                case "guonei":
+                    pageTitle = getString(R.string.category_guonei);
+                    break;
+                case "guoji":
+                    pageTitle = getString(R.string.category_guoji);
+                    break;
+                case "yule":
+                    pageTitle = getString(R.string.category_yule);
+                    break;
+                case "tiyu":
+                    pageTitle = getString(R.string.category_tiyu);
+                    break;
+                case "junshi":
+                    pageTitle = getString(R.string.category_junshi);
+                    break;
+                case "caijing":
+                    pageTitle = getString(R.string.category_caijing);
+                    break;
+                case "shishang":
+                    pageTitle = getString(R.string.category_shishang);
+                    break;
+                default:
+                    pageTitle = getString(R.string.category_top);
+            }
+            return pageTitle;
         }
 
         @Override
