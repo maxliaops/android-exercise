@@ -1,5 +1,13 @@
 package com.rainsong.tiantiannews.fragment;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +25,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.rainsong.tiantiannews.R;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -28,8 +39,10 @@ import java.util.LinkedList;
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
     private static final String ARG_CATAGORY = "catagory";
+    public static final String URL_NEWS = "http://v.juhe.cn/toutiao/index";
+    private static final String JUHE_APPKEY = "4e1d849f4ee325ef117b324d2c834ff2";
 
-    private String category;
+    private String mCategory;
     private Context mContext;
     private PullToRefreshListView mPullToRefreshListView;
     private ListView mActualListView;
@@ -55,14 +68,14 @@ public class NewsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        category = getArguments().getString(ARG_CATAGORY);
-        Log.d(TAG, "onCreate(): category=" + category);
+        mCategory = getArguments().getString(ARG_CATAGORY);
+        Log.d(TAG, "onCreate(): category=" + mCategory);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
-        Log.d(TAG, "onCreateView(): category=" + category);
+        Log.d(TAG, "onCreateView(): category=" + mCategory);
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         mContext = getActivity();
         mPullToRefreshListView = (PullToRefreshListView) rootView
@@ -79,7 +92,7 @@ public class NewsFragment extends Fragment {
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
                 // Do work to refresh the list here.
-                new GetDataTask().execute();
+                new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
             }
         });
         mActualListView = mPullToRefreshListView.getRefreshableView();
@@ -87,7 +100,8 @@ public class NewsFragment extends Fragment {
         mListItems = new LinkedList<String>();
         mListItems.addAll(Arrays.asList(mStrings));
 
-        mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mListItems);
+        mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
+                mListItems);
         mActualListView.setAdapter(mAdapter);
         return rootView;
     }
@@ -97,20 +111,61 @@ public class NewsFragment extends Fragment {
         super.onStart();
     }
 
-    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+    private String httpGet(String targetUrl) {
+        HttpGet httpRequest = new HttpGet(targetUrl);
+        try {
+
+            HttpClient httpClient = new DefaultHttpClient();
+
+            HttpResponse httpResponse = httpClient.execute(httpRequest);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                String strResult = EntityUtils.toString(httpResponse
+                        .getEntity());
+                return strResult;
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private class GetNewsTask extends AsyncTask<String, Void, String> {
 
         @Override
-        protected String[] doInBackground(Void... params) {
-            // Simulates a background job.
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
+        protected String doInBackground(String... params) {
+            if (params.length == 0)
+                return null;
+            String category = params[0];
+
+            String targetUrl = URL_NEWS;
+
+            ArrayList<NameValuePair> paramList = new ArrayList<NameValuePair>();
+            paramList.add(new BasicNameValuePair("key", JUHE_APPKEY));
+            paramList.add(new BasicNameValuePair("type", category));
+
+            for (int i = 0; i < paramList.size(); i++) {
+                NameValuePair nowPair = paramList.get(i);
+                String value = nowPair.getValue();
+                try {
+                    value = URLEncoder.encode(value, "UTF-8");
+                } catch (Exception e) {
+                }
+                if (i == 0) {
+                    targetUrl += ("?" + nowPair.getName() + "=" + value);
+                } else {
+                    targetUrl += ("&" + nowPair.getName() + "=" + value);
+                }
             }
-            return mStrings;
+
+            return httpGet(targetUrl);
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(String result) {
+            Log.d(TAG, "GetNewsTask(): result=" + result);
             mListItems.addFirst("Added after refresh...");
             mAdapter.notifyDataSetChanged();
 
