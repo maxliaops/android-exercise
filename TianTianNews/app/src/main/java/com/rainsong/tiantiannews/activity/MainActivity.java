@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         mTabNewsFragment = new TabNewsFragment();
-        transaction.replace(R.id.fragment_container, mTabNewsFragment);
+        transaction.add(R.id.fragment_container, mTabNewsFragment);
         transaction.commit();
     }
 
@@ -79,38 +79,73 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
             case 0:
                 if (mTabNewsFragment == null) {
                     mTabNewsFragment = new TabNewsFragment();
+                    transaction.add(R.id.fragment_container, mTabNewsFragment);
+                } else {
+                    transaction.attach(mTabNewsFragment);
                 }
-                transaction.replace(R.id.fragment_container, mTabNewsFragment);
                 break;
             case 1:
                 if (mTabVideoFragment == null) {
                     mTabVideoFragment = new TabVideoFragment();
+                    transaction.add(R.id.fragment_container, mTabVideoFragment);
+                } else {
+                    transaction.attach(mTabVideoFragment);
                 }
-                transaction.replace(R.id.fragment_container, mTabVideoFragment);
                 break;
             case 2:
                 if (mDiscoverFragment == null) {
                     mDiscoverFragment = new DiscoverFragment();
+                    transaction.add(R.id.fragment_container, mDiscoverFragment);
+                } else {
+                    transaction.attach(mDiscoverFragment);
                 }
-                transaction.replace(R.id.fragment_container, mDiscoverFragment);
                 break;
             case 3:
                 if (mUserCentralFragment == null) {
                     mUserCentralFragment = new UserCentralFragment();
+                    transaction.add(R.id.fragment_container, mUserCentralFragment);
+                } else {
+                    transaction.attach(mUserCentralFragment);
                 }
-                transaction.replace(R.id.fragment_container, mUserCentralFragment);
                 break;
             default:
                 break;
         }
-        transaction.addToBackStack(null);
         // 事务提交
         transaction.commit();
     }
 
     @Override
     public void onTabUnselected(int position) {
-
+        FragmentManager fm = getSupportFragmentManager();
+        //开启事务
+        FragmentTransaction transaction = fm.beginTransaction();
+        switch (position) {
+            case 0:
+                if (mTabNewsFragment != null) {
+                    transaction.detach(mTabNewsFragment);
+                }
+                break;
+            case 1:
+                if (mTabVideoFragment != null) {
+                    transaction.detach(mTabVideoFragment);
+                }
+                break;
+            case 2:
+                if (mDiscoverFragment != null) {
+                    transaction.detach(mDiscoverFragment);
+                }
+                break;
+            case 3:
+                if (mUserCentralFragment != null) {
+                    transaction.detach(mUserCentralFragment);
+                }
+                break;
+            default:
+                break;
+        }
+        // 事务提交
+        transaction.commit();
     }
 
     @Override
