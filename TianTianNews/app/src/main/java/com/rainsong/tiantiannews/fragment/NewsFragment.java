@@ -21,15 +21,17 @@ import com.rainsong.tiantiannews.entity.NewsListEntity;
 import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
 import com.rainsong.tiantiannews.util.GsonUtils;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -96,7 +98,6 @@ public class NewsFragment extends Fragment {
         mActualListView = mPullToRefreshListView.getRefreshableView();
 
         mListItems = new LinkedList<String>();
-//        mListItems.addAll(Arrays.asList(mStrings));
 
         mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
                 mListItems);
@@ -108,28 +109,54 @@ public class NewsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart(): category=" + mCategory);
-//        new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
+        new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
+    }
+
+    private String readStream(InputStream in) {
+        BufferedReader reader = null;
+        StringBuffer data = new StringBuffer("");
+        try {
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                data.append(line);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "IOException");
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data.toString();
     }
 
     private String httpGet(String targetUrl) {
-        HttpGet httpRequest = new HttpGet(targetUrl);
+        String data = "";
+        HttpURLConnection httpUrlConnection = null;
+
         try {
+            httpUrlConnection = (HttpURLConnection) new URL(targetUrl)
+                    .openConnection();
 
-            HttpClient httpClient = new DefaultHttpClient();
+            InputStream in = new BufferedInputStream(
+                    httpUrlConnection.getInputStream());
 
-            HttpResponse httpResponse = httpClient.execute(httpRequest);
+            data = readStream(in);
 
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                String strResult = EntityUtils.toString(httpResponse
-                        .getEntity());
-                return strResult;
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (MalformedURLException exception) {
+            Log.e(TAG, "MalformedURLException");
+        } catch (IOException exception) {
+            Log.e(TAG, "IOException");
+        } finally {
+            if (null != httpUrlConnection)
+                httpUrlConnection.disconnect();
         }
-        return null;
+        return data;
     }
 
     private class GetNewsTask extends AsyncTask<String, Void, String> {
@@ -167,11 +194,11 @@ public class NewsFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
 //            Log.d(TAG, "GetNewsTask(): result=" + result);
-            if(!TextUtils.isEmpty(result)) {
+            if (!TextUtils.isEmpty(result)) {
                 NewsListEntity newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
                         NewsListEntity.class);
                 List<NewsEntity> newsList = newsListEntity.result.getData();
-                for(NewsEntity newsEntity : newsList) {
+                for (NewsEntity newsEntity : newsList) {
                     mListItems.add(newsEntity.title);
                 }
             }
