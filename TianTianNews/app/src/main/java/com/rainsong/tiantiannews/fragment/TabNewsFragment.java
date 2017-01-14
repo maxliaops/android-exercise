@@ -101,6 +101,9 @@ public class TabNewsFragment extends Fragment {
                 case "junshi":
                     pageTitle = getString(R.string.category_junshi);
                     break;
+                case "keji":
+                    pageTitle = getString(R.string.category_keji);
+                    break;
                 case "caijing":
                     pageTitle = getString(R.string.category_caijing);
                     break;
