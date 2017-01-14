@@ -17,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.rainsong.tiantiannews.R;
+import com.rainsong.tiantiannews.adapter.NewsAdapter;
 import com.rainsong.tiantiannews.entity.NewsListEntity;
 import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
 import com.rainsong.tiantiannews.util.GsonUtils;
@@ -52,8 +53,8 @@ public class NewsFragment extends Fragment {
     private Context mContext;
     private PullToRefreshListView mPullToRefreshListView;
     private ListView mActualListView;
-    private ArrayAdapter<String> mAdapter;
-    private List<String> mListItems;
+    private NewsAdapter mAdapter;
+    private List<NewsEntity> mNewsList;
 
     public static NewsFragment newInstance(String category) {
         Log.d(TAG, "newInstance(): category=" + category);
@@ -97,11 +98,10 @@ public class NewsFragment extends Fragment {
         });
         mActualListView = mPullToRefreshListView.getRefreshableView();
 
-        mListItems = new LinkedList<String>();
-
-        mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
-                mListItems);
+        mNewsList = new ArrayList<>();
+        mAdapter = new NewsAdapter(mContext, mNewsList);
         mActualListView.setAdapter(mAdapter);
+
         return rootView;
     }
 
@@ -111,6 +111,7 @@ public class NewsFragment extends Fragment {
         Log.d(TAG, "onStart(): category=" + mCategory);
         new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
     }
+
 
     private String readStream(InputStream in) {
         BufferedReader reader = null;
@@ -197,12 +198,10 @@ public class NewsFragment extends Fragment {
             if (!TextUtils.isEmpty(result)) {
                 NewsListEntity newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
                         NewsListEntity.class);
+                Log.d(TAG, "GetNewsTask(): category=" + mCategory + " result=" + newsListEntity.reason);
                 List<NewsEntity> newsList = newsListEntity.result.getData();
-                for (NewsEntity newsEntity : newsList) {
-                    mListItems.add(newsEntity.title);
-                }
+                mAdapter.updateData(newsList);
             }
-            mAdapter.notifyDataSetChanged();
 
             // Call onRefreshComplete when the list has been refreshed.
             mPullToRefreshListView.onRefreshComplete();
