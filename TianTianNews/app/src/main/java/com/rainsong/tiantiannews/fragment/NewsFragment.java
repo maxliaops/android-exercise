@@ -1,6 +1,7 @@
 package com.rainsong.tiantiannews.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -17,6 +19,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.rainsong.tiantiannews.R;
+import com.rainsong.tiantiannews.activity.NewsDetailActivity;
 import com.rainsong.tiantiannews.adapter.NewsAdapter;
 import com.rainsong.tiantiannews.entity.NewsListEntity;
 import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
@@ -43,7 +46,7 @@ import java.util.List;
  * Created by maxliaops on 17-1-11.
  */
 
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "NewsFragment";
     private static final String ARG_CATAGORY = "catagory";
     private static final String URL_NEWS = "http://v.juhe.cn/toutiao/index";
@@ -101,6 +104,7 @@ public class NewsFragment extends Fragment {
         mNewsList = new ArrayList<>();
         mAdapter = new NewsAdapter(mContext, mNewsList);
         mActualListView.setAdapter(mAdapter);
+        mActualListView.setOnItemClickListener(this);
 
         return rootView;
     }
@@ -112,6 +116,18 @@ public class NewsFragment extends Fragment {
         new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        NewsEntity newsEntity = (NewsEntity) parent.getItemAtPosition(position);
+        startNewsDetailActivity(newsEntity);
+    }
+
+    private void startNewsDetailActivity(NewsEntity newsEntity) {
+        Intent intent = new Intent(mContext, NewsDetailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("newsEntity", newsEntity);
+        mContext.startActivity(intent);
+    }
 
     private String readStream(InputStream in) {
         BufferedReader reader = null;
@@ -198,9 +214,12 @@ public class NewsFragment extends Fragment {
             if (!TextUtils.isEmpty(result)) {
                 NewsListEntity newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
                         NewsListEntity.class);
-                Log.d(TAG, "GetNewsTask(): category=" + mCategory + " result=" + newsListEntity.reason);
-                List<NewsEntity> newsList = newsListEntity.result.getData();
-                mAdapter.updateData(newsList);
+                Log.d(TAG, "GetNewsTask(): category=" + mCategory + " result=" + newsListEntity
+                        .reason);
+                if(newsListEntity.error_code == 0) {
+                    List<NewsEntity> newsList = newsListEntity.result.getData();
+                    mAdapter.updateData(newsList);
+                }
             }
 
             // Call onRefreshComplete when the list has been refreshed.
