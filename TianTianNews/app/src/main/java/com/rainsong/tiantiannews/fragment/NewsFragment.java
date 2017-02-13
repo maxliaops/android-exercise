@@ -221,6 +221,7 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
                 if(newsListBean.getErrorCode() == 0) {
                     List<DataBean> newsList = newsListBean.getResult().getData();
                     for (DataBean newsBean : newsList) {
+                        newsBean.setCategory(mCategory);
                         mNewsDataSource.saveNews(newsBean);
                     }
                     mAdapter.updateData(newsList);
