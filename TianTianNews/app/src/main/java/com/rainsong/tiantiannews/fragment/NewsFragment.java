@@ -21,8 +21,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.rainsong.tiantiannews.R;
 import com.rainsong.tiantiannews.activity.NewsDetailActivity;
 import com.rainsong.tiantiannews.adapter.NewsAdapter;
-import com.rainsong.tiantiannews.entity.NewsListEntity;
-import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
+import com.rainsong.tiantiannews.bean.NewsListBean;
+import com.rainsong.tiantiannews.bean.NewsListBean.ResultBean.DataBean;
+import com.rainsong.tiantiannews.data.NewsDataSource;
 import com.rainsong.tiantiannews.util.GsonUtils;
 
 import org.apache.http.NameValuePair;
@@ -57,7 +58,8 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
     private PullToRefreshListView mPullToRefreshListView;
     private ListView mActualListView;
     private NewsAdapter mAdapter;
-    private List<NewsEntity> mNewsList;
+    private List<DataBean> mNewsList;
+    private NewsDataSource mNewsDataSource;
 
     public static NewsFragment newInstance(String category) {
         Log.d(TAG, "newInstance(): category=" + category);
@@ -73,6 +75,7 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
 
         mCategory = getArguments().getString(ARG_CATAGORY);
+        mNewsDataSource = NewsDataSource.getInstance(getContext());
         Log.d(TAG, "onCreate(): category=" + mCategory);
     }
 
@@ -118,14 +121,14 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        NewsEntity newsEntity = (NewsEntity) parent.getItemAtPosition(position);
-        startNewsDetailActivity(newsEntity);
+        DataBean newsBean = (DataBean) parent.getItemAtPosition(position);
+        startNewsDetailActivity(newsBean);
     }
 
-    private void startNewsDetailActivity(NewsEntity newsEntity) {
+    private void startNewsDetailActivity(DataBean newsBean) {
         Intent intent = new Intent(mContext, NewsDetailActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("newsEntity", newsEntity);
+        intent.putExtra("newsBean", newsBean);
         mContext.startActivity(intent);
     }
 
@@ -212,12 +215,14 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         protected void onPostExecute(String result) {
 //            Log.d(TAG, "GetNewsTask(): result=" + result);
             if (!TextUtils.isEmpty(result)) {
-                NewsListEntity newsListEntity = (NewsListEntity) GsonUtils.getEntity(result,
-                        NewsListEntity.class);
-                Log.d(TAG, "GetNewsTask(): category=" + mCategory + " result=" + newsListEntity
-                        .reason);
-                if(newsListEntity.error_code == 0) {
-                    List<NewsEntity> newsList = newsListEntity.result.getData();
+                NewsListBean newsListBean = (NewsListBean) GsonUtils.getEntity(result,
+                        NewsListBean.class);
+                Log.d(TAG, "GetNewsTask(): category=" + mCategory + " result=" + newsListBean.getReason());
+                if(newsListBean.getErrorCode() == 0) {
+                    List<DataBean> newsList = newsListBean.getResult().getData();
+                    for (DataBean newsBean : newsList) {
+                        mNewsDataSource.saveNews(newsBean);
+                    }
                     mAdapter.updateData(newsList);
                 }
             }

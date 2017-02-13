@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rainsong.tiantiannews.R;
-import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
+import com.rainsong.tiantiannews.bean.NewsListBean.ResultBean.DataBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +27,16 @@ public class NewsAdapter extends BaseAdapter {
 
     protected Context mContext;
     protected LayoutInflater mInflater;
-    protected List<NewsEntity> mDataList;
+    protected List<DataBean> mDataList;
     private ImageLoader mImageLoader;
     private DisplayImageOptions mOptions;
 
-    public NewsAdapter(Context context, List<NewsEntity> list) {
+    public NewsAdapter(Context context, List<DataBean> list) {
         mContext = context;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mDataList = list == null ? new ArrayList<NewsEntity>()
-                : new ArrayList<NewsEntity>(list);
+        mDataList = list == null ? new ArrayList<DataBean>()
+                : new ArrayList<DataBean>(list);
         mImageLoader = ImageLoader.getInstance();
         mOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.image_small_default) // 设置图片下载期间显示的图片
@@ -47,9 +47,9 @@ public class NewsAdapter extends BaseAdapter {
                 .build(); // 构建完成
     }
 
-    public void updateData(List<NewsEntity> list) {
-        this.mDataList = list == null ? new ArrayList<NewsEntity>()
-                : new ArrayList<NewsEntity>(list);
+    public void updateData(List<DataBean> list) {
+        this.mDataList = list == null ? new ArrayList<DataBean>()
+                : new ArrayList<DataBean>(list);
         this.notifyDataSetChanged();
     }
 
@@ -83,7 +83,7 @@ public class NewsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int type = getItemViewType(position);
-        NewsEntity item = mDataList.get(position);
+        DataBean item = mDataList.get(position);
         ViewHolder holder = null;
         switch (type) {
             case TYPE_NORMAL:
@@ -99,8 +99,8 @@ public class NewsAdapter extends BaseAdapter {
                         .getView(R.id.list_item_image);
                 TextView newsTitleView = (TextView) holder
                         .getView(R.id.list_item_title);
-                newsTitleView.setText(item.title);
-                mImageLoader.displayImage(item.thumbnail_pic_s, newsImageView,
+                newsTitleView.setText(item.getTitle());
+                mImageLoader.displayImage(item.getThumbnail_pic_s(), newsImageView,
                         mOptions);
                 return convertView;
         }

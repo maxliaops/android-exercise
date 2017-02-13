@@ -7,14 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
 import com.rainsong.tiantiannews.R;
-import com.rainsong.tiantiannews.entity.NewsListEntity.Result.NewsEntity;
+import com.rainsong.tiantiannews.bean.NewsListBean.ResultBean.DataBean;
 
 /**
  * Created by maxliaops on 17-1-14.
  */
 
 public class NewsDetailActivity extends AppCompatActivity {
-    private NewsEntity mNewsEntity;
+    private DataBean mNewsBean;
     private WebView mWebView;
 
     @Override
@@ -28,10 +28,10 @@ public class NewsDetailActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        mNewsEntity = (NewsEntity) intent.getSerializableExtra("newsEntity");
+        mNewsBean = (DataBean) intent.getSerializableExtra("newsBean");
 
         mWebView = (WebView) findViewById(R.id.webview);
-        mWebView.loadUrl(mNewsEntity.url);
+        mWebView.loadUrl(mNewsBean.getUrl());
     }
 
     @Override
