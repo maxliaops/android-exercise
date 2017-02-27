@@ -88,7 +88,7 @@ public class NewsAdapter extends BaseAdapter {
         switch (type) {
             case TYPE_NORMAL:
                 if (convertView == null) {
-                    convertView = mInflater.inflate(R.layout.list_item, parent,
+                    convertView = mInflater.inflate(R.layout.item_news, parent,
                             false);
                     holder = new ViewHolder(convertView);
                     convertView.setTag(holder);
@@ -96,10 +96,16 @@ public class NewsAdapter extends BaseAdapter {
                     holder = (ViewHolder) convertView.getTag();
                 }
                 ImageView newsImageView = (ImageView) holder
-                        .getView(R.id.list_item_image);
+                        .getView(R.id.iv_news_pic);
                 TextView newsTitleView = (TextView) holder
-                        .getView(R.id.list_item_title);
+                        .getView(R.id.tv_news_title);
+                TextView newsAuthorName = (TextView) holder
+                        .getView(R.id.tv_news_author_name);
+                TextView newsDate = (TextView) holder
+                        .getView(R.id.tv_news_date);
                 newsTitleView.setText(item.getTitle());
+                newsAuthorName.setText(item.getAuthorName());
+                newsDate.setText(item.getDate());
                 mImageLoader.displayImage(item.getThumbnail_pic_s(), newsImageView,
                         mOptions);
                 return convertView;
