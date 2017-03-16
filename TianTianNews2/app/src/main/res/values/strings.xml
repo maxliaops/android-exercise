@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">天天新闻</string>
+
+    <string name="news">新闻</string>
+    <string name="video">视频</string>
+    <string name="discover">发现</string>
+    <string name="mine">我</string>
+
+    <string name="category_top">头条</string>
+    <string name="category_shehui">社会</string>
+    <string name="category_guonei">国内</string>
+    <string name="category_guoji">国际</string>
+    <string name="category_yule">娱乐</string>
+    <string name="category_tiyu">体育</string>
+    <string name="category_keji">科技</string>
+    <string name="category_junshi">军事</string>
+    <string name="category_caijing">财经</string>
+    <string name="category_shishang">时尚</string>
+</resources>
