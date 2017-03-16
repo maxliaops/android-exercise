@@ -1,6 +1,7 @@
 package com.rainsong.tiantiannews.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +18,14 @@ import com.rainsong.tiantiannews.bean.NewsListBean.ResultBean.DataBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by maxliaops on 17-1-13.
  */
 
-public class NewsAdapter extends BaseAdapter {
+public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_NORMAL = 0;
 
@@ -30,6 +34,7 @@ public class NewsAdapter extends BaseAdapter {
     protected List<DataBean> mDataList;
     private ImageLoader mImageLoader;
     private DisplayImageOptions mOptions;
+    private OnItemClickListener mOnItemClickListener;
 
     public NewsAdapter(Context context, List<DataBean> list) {
         mContext = context;
@@ -54,8 +59,34 @@ public class NewsAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getViewTypeCount() {
-        return 1;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new NewsItemViewHolder(mInflater.inflate(R.layout.item_news, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof NewsItemViewHolder) {
+            DataBean item = mDataList.get(position);
+            NewsItemViewHolder newsItemViewHolder = (NewsItemViewHolder) holder;
+            newsItemViewHolder.newsTitleView.setText(item.getTitle());
+            newsItemViewHolder.newsAuthorName.setText(item.getAuthorName());
+            newsItemViewHolder.newsDate.setText(item.getDate());
+            mImageLoader.displayImage(item.getThumbnail_pic_s(), newsItemViewHolder.newsImageView,
+                    mOptions);
+            newsItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick(position);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return mDataList.size();
     }
 
     @Override
@@ -63,71 +94,29 @@ public class NewsAdapter extends BaseAdapter {
         return TYPE_NORMAL;
     }
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
-    }
+    public static class NewsItemViewHolder extends RecyclerView.ViewHolder {
 
-    @Override
-    public Object getItem(int position) {
-        if (position >= mDataList.size())
-            return null;
-        return mDataList.get(position);
-    }
+        @BindView(R.id.tv_news_title)
+        TextView newsTitleView;
+        @BindView(R.id.tv_news_author_name)
+        TextView newsAuthorName;
+        @BindView(R.id.tv_news_date)
+        TextView newsDate;
+        @BindView(R.id.iv_news_pic)
+        ImageView newsImageView;
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        int type = getItemViewType(position);
-        DataBean item = mDataList.get(position);
-        ViewHolder holder = null;
-        switch (type) {
-            case TYPE_NORMAL:
-                if (convertView == null) {
-                    convertView = mInflater.inflate(R.layout.item_news, parent,
-                            false);
-                    holder = new ViewHolder(convertView);
-                    convertView.setTag(holder);
-                } else {
-                    holder = (ViewHolder) convertView.getTag();
-                }
-                ImageView newsImageView = (ImageView) holder
-                        .getView(R.id.iv_news_pic);
-                TextView newsTitleView = (TextView) holder
-                        .getView(R.id.tv_news_title);
-                TextView newsAuthorName = (TextView) holder
-                        .getView(R.id.tv_news_author_name);
-                TextView newsDate = (TextView) holder
-                        .getView(R.id.tv_news_date);
-                newsTitleView.setText(item.getTitle());
-                newsAuthorName.setText(item.getAuthorName());
-                newsDate.setText(item.getDate());
-                mImageLoader.displayImage(item.getThumbnail_pic_s(), newsImageView,
-                        mOptions);
-                return convertView;
-        }
-        return null;
-    }
-
-    public class ViewHolder {
-        private SparseArray<View> views = new SparseArray<View>();
-        private View convertView;
-
-        public ViewHolder(View convertView) {
-            this.convertView = convertView;
-        }
-
-        public <T extends View> T getView(int resId) {
-            View v = views.get(resId);
-            if (null == v) {
-                v = convertView.findViewById(resId);
-                views.put(resId, v);
-            }
-            return (T) v;
+        public NewsItemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
 }

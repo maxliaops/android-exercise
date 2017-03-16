@@ -4,15 +4,9 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/news_listview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_news_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:divider="@null"
-        android:drawSelectorOnTop="false"
-        android:fastScrollEnabled="true"
-        android:focusable="true"
-        android:listSelector="@android:color/transparent"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
