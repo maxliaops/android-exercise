@@ -20,6 +20,7 @@ import com.rainsong.tiantiannews.activity.NewsDetailActivity;
 import com.rainsong.tiantiannews.adapter.NewsAdapter;
 import com.rainsong.tiantiannews.bean.NewsListBean;
 import com.rainsong.tiantiannews.bean.NewsListBean.ResultBean.DataBean;
+import com.rainsong.tiantiannews.data.DataManager;
 import com.rainsong.tiantiannews.data.NewsDataSource;
 import com.rainsong.tiantiannews.util.GsonUtils;
 
@@ -40,6 +41,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -49,8 +54,6 @@ import butterknife.ButterKnife;
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
     private static final String ARG_CATAGORY = "catagory";
-    private static final String URL_NEWS = "http://v.juhe.cn/toutiao/index";
-    private static final String JUHE_APPKEY = "4e1d849f4ee325ef117b324d2c834ff2";
 
     @BindView(R.id.rv_news_list)
     RecyclerView rvNewsList;
@@ -60,6 +63,8 @@ public class NewsFragment extends Fragment {
     private NewsAdapter mAdapter;
     private List<DataBean> mNewsList;
     private NewsDataSource mNewsDataSource;
+    private DataManager mDataManager;
+    private Subscription mSubscription;
 
     public static NewsFragment newInstance(String category) {
         Log.d(TAG, "newInstance(): category=" + category);
@@ -76,6 +81,7 @@ public class NewsFragment extends Fragment {
 
         mCategory = getArguments().getString(ARG_CATAGORY);
         mNewsDataSource = NewsDataSource.getInstance(getContext());
+        mDataManager = DataManager.getInstance();
         Log.d(TAG, "onCreate(): category=" + mCategory);
     }
 
@@ -100,11 +106,12 @@ public class NewsFragment extends Fragment {
         return rootView;
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart(): category=" + mCategory);
-        new GetNewsTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCategory);
+        getNews(mCategory);
     }
 
     private void startNewsDetailActivity(DataBean newsBean) {
@@ -114,105 +121,38 @@ public class NewsFragment extends Fragment {
         mContext.startActivity(intent);
     }
 
-    private String readStream(InputStream in) {
-        BufferedReader reader = null;
-        StringBuffer data = new StringBuffer("");
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                data.append(line);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void getNews(final String category) {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
         }
-        return data.toString();
-    }
+        mSubscription = mDataManager.getNews(category)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<NewsListBean>() {
+                    @Override
+                    public void onCompleted() {
 
-    private String httpGet(String targetUrl) {
-        String data = "";
-        HttpURLConnection httpUrlConnection = null;
-
-        try {
-            httpUrlConnection = (HttpURLConnection) new URL(targetUrl)
-                    .openConnection();
-
-            InputStream in = new BufferedInputStream(
-                    httpUrlConnection.getInputStream());
-
-            data = readStream(in);
-
-        } catch (MalformedURLException exception) {
-            Log.e(TAG, "MalformedURLException");
-        } catch (IOException exception) {
-            Log.e(TAG, "IOException");
-        } finally {
-            if (null != httpUrlConnection)
-                httpUrlConnection.disconnect();
-        }
-        return data;
-    }
-
-    private class GetNewsTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            if (params.length == 0)
-                return null;
-            String category = params[0];
-            Log.d(TAG, "GetNewsTask(): category=" + category);
-
-            String targetUrl = URL_NEWS;
-
-            ArrayList<NameValuePair> paramList = new ArrayList<NameValuePair>();
-            paramList.add(new BasicNameValuePair("key", JUHE_APPKEY));
-            paramList.add(new BasicNameValuePair("type", category));
-
-            for (int i = 0; i < paramList.size(); i++) {
-                NameValuePair nowPair = paramList.get(i);
-                String value = nowPair.getValue();
-                try {
-                    value = URLEncoder.encode(value, "UTF-8");
-                } catch (Exception e) {
-                }
-                if (i == 0) {
-                    targetUrl += ("?" + nowPair.getName() + "=" + value);
-                } else {
-                    targetUrl += ("&" + nowPair.getName() + "=" + value);
-                }
-            }
-
-            return httpGet(targetUrl);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-//            Log.d(TAG, "GetNewsTask(): result=" + result);
-            if (!TextUtils.isEmpty(result)) {
-                NewsListBean newsListBean = (NewsListBean) GsonUtils.getEntity(result,
-                        NewsListBean.class);
-                Log.d(TAG, "GetNewsTask(): category=" + mCategory + " result=" + newsListBean
-                        .getReason());
-                if (newsListBean.getErrorCode() == 0) {
-                    List<DataBean> newsList = newsListBean.getResult().getData();
-                    for (DataBean newsBean : newsList) {
-                        newsBean.setCategory(mCategory);
-                        mNewsDataSource.saveNews(newsBean);
                     }
-                    mAdapter.updateData(newsList);
-                }
-            }
 
-            super.onPostExecute(result);
-        }
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(NewsListBean newsListBean) {
+                        Log.d(TAG, "onNext(): category=" + category + " result=" + newsListBean
+                                .getReason());
+                        if (newsListBean.getErrorCode() == 0) {
+                            List<DataBean> newsList = newsListBean.getResult().getData();
+                            for (DataBean newsBean : newsList) {
+                                newsBean.setCategory(category);
+                                mNewsDataSource.saveNews(newsBean);
+                            }
+                            mAdapter.updateData(newsList);
+                        }
+                    }
+                });
     }
 
 }
