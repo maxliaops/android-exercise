@@ -91,7 +91,7 @@ public class NewsFragment extends Fragment {
         mAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                DataBean newsBean = (DataBean) mNewsList.get(position);
+                DataBean newsBean = mAdapter.getItemData(position);
                 startNewsDetailActivity(newsBean);
             }
         });
