@@ -67,13 +67,13 @@ public class NewsFragment extends Fragment {
         mCategory = getArguments().getString(ARG_CATAGORY);
         mNewsDataSource = NewsDataSource.getInstance(getContext());
         mDataManager = DataManager.getInstance();
-        Log.d(TAG, "onCreate(): category=" + mCategory);
+//        Log.d(TAG, "onCreate(): category=" + mCategory);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
-        Log.d(TAG, "onCreateView(): category=" + mCategory);
+//        Log.d(TAG, "onCreateView(): category=" + mCategory);
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, rootView);
@@ -137,6 +137,7 @@ public class NewsFragment extends Fragment {
                                 GroupInfoEntity groupInfo = (GroupInfoEntity) GsonUtils.getEntity
                                         (content, GroupInfoEntity.class);
                                 if(groupInfo != null && !TextUtils.isEmpty(groupInfo.getTitle())) {
+                                    Log.d(TAG, "onNext(): url=" + groupInfo.getArticle_url());
                                     groupInfos.add(groupInfo);
                                 }
                             }
