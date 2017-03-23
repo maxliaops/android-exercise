@@ -61,16 +61,16 @@ public class TabNewsFragment extends Fragment {
 
         public NewsPagerAdapter(FragmentManager fm) {
             super(fm);
-            catalogs.add("top");
-            catalogs.add("shehui");
-            catalogs.add("guonei");
-            catalogs.add("guoji");
-            catalogs.add("yule");
-            catalogs.add("tiyu");
-            catalogs.add("junshi");
-            catalogs.add("keji");
-            catalogs.add("caijing");
-            catalogs.add("shishang");
+            catalogs.add("news_hot");
+            catalogs.add("news_society");
+            catalogs.add("news_entertainment");
+            catalogs.add("news_tech");
+            catalogs.add("news_sports");
+            catalogs.add("news_car");
+            catalogs.add("news_finance");
+            catalogs.add("news_military");
+            catalogs.add("news_world");
+            catalogs.add("news_fashion");
         }
 
         @Override
@@ -78,38 +78,38 @@ public class TabNewsFragment extends Fragment {
             String category = catalogs.get(position);
             String pageTitle;
             switch (category) {
-                case "top":
-                    pageTitle = getString(R.string.category_top);
+                case "news_hot":
+                    pageTitle = getString(R.string.category_news_hot);
                     break;
-                case "shehui":
-                    pageTitle = getString(R.string.category_shehui);
+                case "news_society":
+                    pageTitle = getString(R.string.category_news_society);
                     break;
-                case "guonei":
-                    pageTitle = getString(R.string.category_guonei);
+                case "news_image":
+                    pageTitle = getString(R.string.category_news_image);
                     break;
-                case "guoji":
-                    pageTitle = getString(R.string.category_guoji);
+                case "news_world":
+                    pageTitle = getString(R.string.category_news_world);
                     break;
-                case "yule":
-                    pageTitle = getString(R.string.category_yule);
+                case "news_entertainment":
+                    pageTitle = getString(R.string.category_news_entertainment);
                     break;
-                case "tiyu":
-                    pageTitle = getString(R.string.category_tiyu);
+                case "news_sports":
+                    pageTitle = getString(R.string.category_news_sports);
                     break;
-                case "junshi":
-                    pageTitle = getString(R.string.category_junshi);
+                case "news_military":
+                    pageTitle = getString(R.string.category_news_military);
                     break;
-                case "keji":
-                    pageTitle = getString(R.string.category_keji);
+                case "news_tech":
+                    pageTitle = getString(R.string.category_news_tech);
                     break;
-                case "caijing":
-                    pageTitle = getString(R.string.category_caijing);
+                case "news_finance":
+                    pageTitle = getString(R.string.category_news_finance);
                     break;
-                case "shishang":
-                    pageTitle = getString(R.string.category_shishang);
+                case "news_fashion":
+                    pageTitle = getString(R.string.category_news_fashion);
                     break;
                 default:
-                    pageTitle = getString(R.string.category_top);
+                    pageTitle = getString(R.string.category_news_hot);
             }
             return pageTitle;
         }

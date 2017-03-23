@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import com.rainsong.toutiao.R;
 import com.rainsong.toutiao.activity.NewsDetailActivity;
 import com.rainsong.toutiao.adapter.NewsAdapter;
-import com.rainsong.toutiao.bean.NewsListBean;
-import com.rainsong.toutiao.bean.NewsListBean.ResultBean.DataBean;
 import com.rainsong.toutiao.data.DataManager;
 import com.rainsong.toutiao.data.NewsDataSource;
+import com.rainsong.toutiao.entity.ArticleListResponseEntity;
+import com.rainsong.toutiao.entity.ArticleListResponseEntity.DataEntity;
+import com.rainsong.toutiao.entity.GroupInfoEntity;
+import com.rainsong.toutiao.util.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,6 @@ public class NewsFragment extends Fragment {
     private String mCategory;
     private Context mContext;
     private NewsAdapter mAdapter;
-    private List<DataBean> mNewsList;
     private NewsDataSource mNewsDataSource;
     private DataManager mDataManager;
     private Subscription mSubscription;
@@ -75,13 +76,13 @@ public class NewsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, rootView);
-        mNewsList = new ArrayList<>();
-        mAdapter = new NewsAdapter(mContext, mNewsList);
+        mAdapter = new NewsAdapter(mContext, null);
         mAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                DataBean newsBean = mAdapter.getItemData(position);
-                startNewsDetailActivity(newsBean);
+                GroupInfoEntity groupInfo = mAdapter.getItemData(position);
+                String articleUrl = groupInfo.getArticle_url();
+                startNewsDetailActivity(articleUrl);
             }
         });
         rvNewsList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -94,24 +95,24 @@ public class NewsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart(): category=" + mCategory);
-        getNews(mCategory);
+        getFeedNews(mCategory);
     }
 
-    private void startNewsDetailActivity(DataBean newsBean) {
+    private void startNewsDetailActivity(String articleUrl) {
         Intent intent = new Intent(mContext, NewsDetailActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("newsBean", newsBean);
+        intent.putExtra("article_url", articleUrl);
         mContext.startActivity(intent);
     }
 
-    public void getNews(final String category) {
+    public void getFeedNews(final String category) {
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
         }
-        mSubscription = mDataManager.getNews(category)
+        mSubscription = mDataManager.getFeedArticleList(category)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<NewsListBean>() {
+                .subscribe(new Subscriber<ArticleListResponseEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -119,20 +120,26 @@ public class NewsFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d(TAG, "onError(): category=" + category + " error=" +
+                                e.toString());
                     }
 
                     @Override
-                    public void onNext(NewsListBean newsListBean) {
-                        Log.d(TAG, "onNext(): category=" + category + " result=" + newsListBean
-                                .getReason());
-                        if (newsListBean.getErrorCode() == 0) {
-                            List<DataBean> newsList = newsListBean.getResult().getData();
-                            for (DataBean newsBean : newsList) {
-                                newsBean.setCategory(category);
-                                mNewsDataSource.saveNews(newsBean);
+                    public void onNext(ArticleListResponseEntity articleListResponseEntity) {
+                        Log.d(TAG, "onNext(): category=" + category + " result=" +
+                                articleListResponseEntity.getTotal_number());
+                        if (articleListResponseEntity.getMessage().equals("success")) {
+                            List<DataEntity> dataList = articleListResponseEntity.getData();
+                            List<GroupInfoEntity> groupInfos = new ArrayList<GroupInfoEntity>();
+                            for (DataEntity dataEntity : dataList) {
+                                String content = dataEntity.getContent();
+                                GroupInfoEntity groupInfo = (GroupInfoEntity) GsonUtils.getEntity
+                                        (content, GroupInfoEntity.class);
+                                if(groupInfo != null) {
+                                    groupInfos.add(groupInfo);
+                                }
                             }
-                            mAdapter.updateData(newsList);
+                            mAdapter.updateData(groupInfos);
                         }
                     }
                 });

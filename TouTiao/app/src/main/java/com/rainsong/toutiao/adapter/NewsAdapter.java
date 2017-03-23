@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.rainsong.toutiao.R;
-import com.rainsong.toutiao.bean.NewsListBean.ResultBean.DataBean;
+import com.rainsong.toutiao.entity.GroupInfoEntity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,24 +30,24 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected Context mContext;
     protected LayoutInflater mInflater;
-    protected List<DataBean> mDataList;
+    protected List<GroupInfoEntity> mDataList;
     private OnItemClickListener mOnItemClickListener;
 
-    public NewsAdapter(Context context, List<DataBean> list) {
+    public NewsAdapter(Context context, List<GroupInfoEntity> list) {
         mContext = context;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mDataList = list == null ? new ArrayList<DataBean>()
-                : new ArrayList<DataBean>(list);
+        mDataList = list == null ? new ArrayList<GroupInfoEntity>()
+                : new ArrayList<GroupInfoEntity>(list);
     }
 
-    public void updateData(List<DataBean> list) {
-        this.mDataList = list == null ? new ArrayList<DataBean>()
-                : new ArrayList<DataBean>(list);
+    public void updateData(List<GroupInfoEntity> list) {
+        this.mDataList = list == null ? new ArrayList<GroupInfoEntity>()
+                : new ArrayList<GroupInfoEntity>(list);
         this.notifyDataSetChanged();
     }
 
-    public DataBean getItemData(int position) {
+    public GroupInfoEntity getItemData(int position) {
         if (mDataList != null) {
             return mDataList.get(position);
         } else {
@@ -61,15 +63,22 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof NewsItemViewHolder) {
-            DataBean item = mDataList.get(position);
+            GroupInfoEntity item = mDataList.get(position);
             NewsItemViewHolder newsItemViewHolder = (NewsItemViewHolder) holder;
             newsItemViewHolder.newsTitleView.setText(item.getTitle());
-            newsItemViewHolder.newsAuthorName.setText(item.getAuthorName());
-            newsItemViewHolder.newsDate.setText(item.getDate());
+            newsItemViewHolder.newsAuthorName.setText(item.getSource());
+            String date = timestamp2Date(String.valueOf(item.getPublish_time()), null);
+            newsItemViewHolder.newsDate.setText(date);
 
-            Glide.with(mContext)
-                    .load(item.getThumbnail_pic_s())
-                    .into(newsItemViewHolder.newsImageView);
+            if(item.getMiddle_image() != null) {
+                Glide.with(mContext)
+                        .load(item.getMiddle_image().getUrl())
+                        .into(newsItemViewHolder.newsImageView);
+            } else if(item.getImage_list() != null) {
+                Glide.with(mContext)
+                        .load(item.getImage_list().get(0).getUrl())
+                        .into(newsItemViewHolder.newsImageView);
+            }
             newsItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -89,6 +98,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return TYPE_NORMAL;
+    }
+
+    /**
+     * 时间戳转换成日期格式字符串
+     * @param seconds 精确到秒的字符串
+     * @param formatStr
+     * @return
+     */
+    public static String timestamp2Date(String seconds, String format) {
+        if(seconds == null || seconds.isEmpty() || seconds.equals("null")){
+            return "";
+        }
+        if(format == null || format.isEmpty()){
+            format = "yyyy-MM-dd HH:mm";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(Long.valueOf(seconds+"000")));
     }
 
     public static class NewsItemViewHolder extends RecyclerView.ViewHolder {

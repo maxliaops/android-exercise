@@ -14,7 +14,7 @@ import com.rainsong.toutiao.bean.NewsListBean.ResultBean.DataBean;
  */
 
 public class NewsDetailActivity extends AppCompatActivity {
-    private DataBean mNewsBean;
+    private String mArticleUrl;
     private WebView mWebView;
 
     @Override
@@ -28,10 +28,10 @@ public class NewsDetailActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        mNewsBean = (DataBean) intent.getSerializableExtra("newsBean");
+        mArticleUrl = intent.getStringExtra("article_url");
 
         mWebView = (WebView) findViewById(R.id.webview);
-        mWebView.loadUrl(mNewsBean.getUrl());
+        mWebView.loadUrl(mArticleUrl);
     }
 
     @Override

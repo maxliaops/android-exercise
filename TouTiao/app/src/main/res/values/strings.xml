@@ -6,14 +6,14 @@
     <string name="discover">发现</string>
     <string name="mine">我</string>
 
-    <string name="category_top">头条</string>
-    <string name="category_shehui">社会</string>
-    <string name="category_guonei">国内</string>
-    <string name="category_guoji">国际</string>
-    <string name="category_yule">娱乐</string>
-    <string name="category_tiyu">体育</string>
-    <string name="category_keji">科技</string>
-    <string name="category_junshi">军事</string>
-    <string name="category_caijing">财经</string>
-    <string name="category_shishang">时尚</string>
+    <string name="category_news_hot">热点</string>
+    <string name="category_news_society">社会</string>
+    <string name="category_news_image">图片</string>
+    <string name="category_news_world">国际</string>
+    <string name="category_news_entertainment">娱乐</string>
+    <string name="category_news_sports">体育</string>
+    <string name="category_news_tech">科技</string>
+    <string name="category_news_military">军事</string>
+    <string name="category_news_finance">财经</string>
+    <string name="category_news_fashion">时尚</string>
 </resources>
