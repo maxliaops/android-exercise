@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,7 +136,7 @@ public class NewsFragment extends Fragment {
                                 String content = dataEntity.getContent();
                                 GroupInfoEntity groupInfo = (GroupInfoEntity) GsonUtils.getEntity
                                         (content, GroupInfoEntity.class);
-                                if(groupInfo != null) {
+                                if(groupInfo != null && !TextUtils.isEmpty(groupInfo.getTitle())) {
                                     groupInfos.add(groupInfo);
                                 }
                             }

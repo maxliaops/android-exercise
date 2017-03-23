@@ -26,7 +26,9 @@ import butterknife.ButterKnife;
 
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_NORMAL = 0;
+    private static final int ITEM_TYPE_NO_IMAGE = 0;
+    private static final int ITEM_TYPE_SMALL_IMAGE = 1;
+    private static final int ITEM_TYPE_MULTI_IMAGE = 2;
 
     protected Context mContext;
     protected LayoutInflater mInflater;
@@ -57,29 +59,78 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new NewsItemViewHolder(mInflater.inflate(R.layout.item_news, parent, false));
+        if (viewType == ITEM_TYPE_SMALL_IMAGE) {
+            return new NewsItemSmallImageViewHolder(mInflater.inflate(R.layout
+                    .item_news_small_image, parent, false));
+        } else if (viewType == ITEM_TYPE_MULTI_IMAGE) {
+            return new NewsItemMultiImageViewHolder(mInflater.inflate(R.layout
+                    .item_news_multi_image, parent, false));
+        } else {
+            return new NewsItemNoImageViewHolder(mInflater.inflate(R.layout.item_news_no_image,
+                    parent, false));
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof NewsItemViewHolder) {
+        if (holder instanceof NewsItemSmallImageViewHolder) {
             GroupInfoEntity item = mDataList.get(position);
-            NewsItemViewHolder newsItemViewHolder = (NewsItemViewHolder) holder;
-            newsItemViewHolder.newsTitleView.setText(item.getTitle());
-            newsItemViewHolder.newsAuthorName.setText(item.getSource());
+            NewsItemSmallImageViewHolder newsItemSmallImageViewHolder =
+                    (NewsItemSmallImageViewHolder) holder;
+            newsItemSmallImageViewHolder.newsTitleView.setText(item.getTitle());
+            newsItemSmallImageViewHolder.newsAuthorName.setText(item.getSource());
             String date = timestamp2Date(String.valueOf(item.getPublish_time()), null);
-            newsItemViewHolder.newsDate.setText(date);
+            newsItemSmallImageViewHolder.newsDate.setText(date);
 
-            if(item.getMiddle_image() != null) {
-                Glide.with(mContext)
-                        .load(item.getMiddle_image().getUrl())
-                        .into(newsItemViewHolder.newsImageView);
-            } else if(item.getImage_list() != null) {
-                Glide.with(mContext)
-                        .load(item.getImage_list().get(0).getUrl())
-                        .into(newsItemViewHolder.newsImageView);
-            }
-            newsItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            Glide.with(mContext)
+                    .load(item.getMiddle_image().getUrl())
+                    .into(newsItemSmallImageViewHolder.newsImageView);
+
+            newsItemSmallImageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick(position);
+                    }
+                }
+            });
+        } else if (holder instanceof NewsItemMultiImageViewHolder) {
+            GroupInfoEntity item = mDataList.get(position);
+            NewsItemMultiImageViewHolder newsItemMultiImageViewHolder =
+                    (NewsItemMultiImageViewHolder) holder;
+            newsItemMultiImageViewHolder.newsTitleView.setText(item.getTitle());
+            newsItemMultiImageViewHolder.newsAuthorName.setText(item.getSource());
+            String date = timestamp2Date(String.valueOf(item.getPublish_time()), null);
+            newsItemMultiImageViewHolder.newsDate.setText(date);
+
+            Glide.with(mContext)
+                    .load(item.getImage_list().get(0).getUrl())
+                    .into(newsItemMultiImageViewHolder.newsImageView0);
+            Glide.with(mContext)
+                    .load(item.getImage_list().get(1).getUrl())
+                    .into(newsItemMultiImageViewHolder.newsImageView1);
+            Glide.with(mContext)
+                    .load(item.getImage_list().get(2).getUrl())
+                    .into(newsItemMultiImageViewHolder.newsImageView2);
+
+            newsItemMultiImageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick(position);
+                    }
+                }
+            });
+        } else if (holder instanceof NewsItemNoImageViewHolder) {
+            GroupInfoEntity item = mDataList.get(position);
+            NewsItemNoImageViewHolder newsItemNoImageViewHolder = (NewsItemNoImageViewHolder)
+                    holder;
+            newsItemNoImageViewHolder.newsTitleView.setText(item.getTitle());
+            newsItemNoImageViewHolder.newsAuthorName.setText(item.getSource());
+            String date = timestamp2Date(String.valueOf(item.getPublish_time()), null);
+            newsItemNoImageViewHolder.newsDate.setText(date);
+
+            newsItemNoImageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
@@ -97,27 +148,55 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return TYPE_NORMAL;
+        GroupInfoEntity groupInfoEntity = mDataList.get(position);
+        if (groupInfoEntity.isHas_image()) {
+            if (groupInfoEntity.getImage_list() != null && groupInfoEntity.getImage_list().size()
+                    >= 3) {
+                return ITEM_TYPE_MULTI_IMAGE;
+            } else if (groupInfoEntity.getMiddle_image() != null) {
+                return ITEM_TYPE_SMALL_IMAGE;
+            } else {
+                return ITEM_TYPE_NO_IMAGE;
+            }
+        } else {
+            return ITEM_TYPE_NO_IMAGE;
+        }
     }
 
     /**
      * 时间戳转换成日期格式字符串
+     *
      * @param seconds 精确到秒的字符串
-     * @param formatStr
+     * @param format
      * @return
      */
     public static String timestamp2Date(String seconds, String format) {
-        if(seconds == null || seconds.isEmpty() || seconds.equals("null")){
+        if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
             return "";
         }
-        if(format == null || format.isEmpty()){
+        if (format == null || format.isEmpty()) {
             format = "yyyy-MM-dd HH:mm";
         }
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-        return sdf.format(new Date(Long.valueOf(seconds+"000")));
+        return sdf.format(new Date(Long.valueOf(seconds + "000")));
     }
 
-    public static class NewsItemViewHolder extends RecyclerView.ViewHolder {
+    public static class NewsItemNoImageViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tv_news_title)
+        TextView newsTitleView;
+        @BindView(R.id.tv_news_author_name)
+        TextView newsAuthorName;
+        @BindView(R.id.tv_news_date)
+        TextView newsDate;
+
+        public NewsItemNoImageViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public static class NewsItemSmallImageViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_news_title)
         TextView newsTitleView;
@@ -128,7 +207,28 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.iv_news_pic)
         ImageView newsImageView;
 
-        public NewsItemViewHolder(View itemView) {
+        public NewsItemSmallImageViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public static class NewsItemMultiImageViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tv_news_title)
+        TextView newsTitleView;
+        @BindView(R.id.tv_news_author_name)
+        TextView newsAuthorName;
+        @BindView(R.id.tv_news_date)
+        TextView newsDate;
+        @BindView(R.id.iv_news_pic0)
+        ImageView newsImageView0;
+        @BindView(R.id.iv_news_pic1)
+        ImageView newsImageView1;
+        @BindView(R.id.iv_news_pic2)
+        ImageView newsImageView2;
+
+        public NewsItemMultiImageViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
