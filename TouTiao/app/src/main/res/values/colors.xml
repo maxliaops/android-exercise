@@ -21,4 +21,10 @@
     <color name="list_item_bg_light_normal">#ffffffff</color>
     <color name="list_item_date_light">#272727</color>
     <color name="textNormalColor">#3e3d3d</color>
+
+    <color name="swipe_color_1">#B6DB49</color>
+    <color name="swipe_color_2">#99CC00</color>
+    <color name="swipe_color_3">#8ABD00</color>
+    <color name="swipe_color_4">#7CAF00</color>
+
 </resources>

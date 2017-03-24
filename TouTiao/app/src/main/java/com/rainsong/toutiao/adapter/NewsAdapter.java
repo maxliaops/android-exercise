@@ -2,6 +2,7 @@ package com.rainsong.toutiao.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 /**
  * Created by maxliaops on 17-1-13.
@@ -43,10 +46,21 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 : new ArrayList<GroupInfoEntity>(list);
     }
 
+    public List<GroupInfoEntity> getData() {
+        return mDataList;
+    }
+
     public void updateData(List<GroupInfoEntity> list) {
-        this.mDataList = list == null ? new ArrayList<GroupInfoEntity>()
+        mDataList = list == null ? new ArrayList<GroupInfoEntity>()
                 : new ArrayList<GroupInfoEntity>(list);
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<GroupInfoEntity> list) {
+        if (mDataList != null) {
+            mDataList.addAll(list);
+        }
+        notifyDataSetChanged();
     }
 
     public GroupInfoEntity getItemData(int position) {
@@ -103,6 +117,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String date = timestamp2Date(String.valueOf(item.getPublish_time()), null);
             newsItemMultiImageViewHolder.newsDate.setText(date);
 
+            String url0 = item.getImage_list().get(0).getUrl();
+            String url1 = item.getImage_list().get(1).getUrl();
+            String url2 = item.getImage_list().get(2).getUrl();
+//            Log.d(TAG, "NewsItemMultiImageViewHolder " + item.getTitle() + " " + url0 + " " + url1 + " " + url2);
             Glide.with(mContext)
                     .load(item.getImage_list().get(0).getUrl())
                     .into(newsItemMultiImageViewHolder.newsImageView0);

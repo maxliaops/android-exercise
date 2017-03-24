@@ -3,7 +3,9 @@ package com.rainsong.toutiao.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -41,13 +43,17 @@ public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
     private static final String ARG_CATAGORY = "catagory";
 
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     @BindView(R.id.rv_news_list)
-    RecyclerView rvNewsList;
+    RecyclerView mNewsList;
 
     private String mCategory;
     private Context mContext;
     private NewsAdapter mAdapter;
     private NewsDataSource mNewsDataSource;
+    private List<GroupInfoEntity> mDataList;
     private DataManager mDataManager;
     private Subscription mSubscription;
 
@@ -58,6 +64,10 @@ public class NewsFragment extends Fragment {
         b.putString(ARG_CATAGORY, category);
         f.setArguments(b);
         return f;
+    }
+
+    public NewsFragment() {
+        mDataList = new ArrayList<>();
     }
 
     @Override
@@ -77,7 +87,18 @@ public class NewsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, rootView);
-        mAdapter = new NewsAdapter(mContext, null);
+        mSwipeRefreshLayout.setColorScheme(
+                R.color.swipe_color_1, R.color.swipe_color_2,
+                R.color.swipe_color_3, R.color.swipe_color_4);
+
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mAdapter = new NewsAdapter(mContext, mDataList);
         mAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -86,17 +107,41 @@ public class NewsFragment extends Fragment {
                 startNewsDetailActivity(articleUrl);
             }
         });
-        rvNewsList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvNewsList.setAdapter(mAdapter);
-        return rootView;
-    }
+        mNewsList.setLayoutManager(new LinearLayoutManager(mContext));
+        mNewsList.setAdapter(mAdapter);
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+                // We make sure that the SwipeRefreshLayout is displaying it's refreshing indicator
+                if (!mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                }
+                initiateRefresh();
+            }
+        });
+
+        Log.d(TAG, "onViewCreated(): category=" + mCategory);
+        getFeedNews(mCategory);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart(): category=" + mCategory);
+    }
+
+    private void initiateRefresh() {
+        Log.i(TAG, "initiateRefresh");
+
         getFeedNews(mCategory);
+    }
+
+    private void onRefreshComplete() {
+        Log.i(TAG, "onRefreshComplete");
+
+        // Stop the refreshing indicator
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void startNewsDetailActivity(String articleUrl) {
@@ -107,6 +152,7 @@ public class NewsFragment extends Fragment {
     }
 
     public void getFeedNews(final String category) {
+        Log.i(TAG, "getFeedNews(): category=" + category);
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
         }
@@ -116,13 +162,15 @@ public class NewsFragment extends Fragment {
                 .subscribe(new Subscriber<ArticleListResponseEntity>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.d(TAG, "onCompleted()");
+                        onRefreshComplete();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, "onError(): category=" + category + " error=" +
                                 e.toString());
+                        onRefreshComplete();
                     }
 
                     @Override
@@ -136,11 +184,13 @@ public class NewsFragment extends Fragment {
                                 String content = dataEntity.getContent();
                                 GroupInfoEntity groupInfo = (GroupInfoEntity) GsonUtils.getEntity
                                         (content, GroupInfoEntity.class);
-                                if(groupInfo != null && !TextUtils.isEmpty(groupInfo.getTitle())) {
-                                    Log.d(TAG, "onNext(): url=" + groupInfo.getArticle_url());
+                                if (groupInfo != null && !TextUtils.isEmpty(groupInfo.getTitle())) {
+//                                    Log.d(TAG, "onNext(): url=" + groupInfo.getArticle_url());
                                     groupInfos.add(groupInfo);
                                 }
                             }
+                            groupInfos.addAll(mDataList);
+                            mDataList = groupInfos;
                             mAdapter.updateData(groupInfos);
                         }
                     }
