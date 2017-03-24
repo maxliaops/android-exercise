@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.rainsong.toutiao.R;
 import com.rainsong.toutiao.activity.NewsDetailActivity;
 import com.rainsong.toutiao.adapter.NewsAdapter;
+import com.rainsong.toutiao.animation.ScaleInAnimation;
 import com.rainsong.toutiao.data.DataManager;
 import com.rainsong.toutiao.data.NewsDataSource;
 import com.rainsong.toutiao.entity.ArticleListResponseEntity;
@@ -99,6 +100,7 @@ public class NewsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAdapter = new NewsAdapter(mContext, mDataList);
+        mAdapter.openLoadAnimation(new ScaleInAnimation());
         mAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {

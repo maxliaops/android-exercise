@@ -1,16 +1,21 @@
 package com.rainsong.toutiao.adapter;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.rainsong.toutiao.R;
+import com.rainsong.toutiao.animation.AlphaInAnimation;
+import com.rainsong.toutiao.animation.BaseAnimation;
 import com.rainsong.toutiao.entity.GroupInfoEntity;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +42,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected LayoutInflater mInflater;
     protected List<GroupInfoEntity> mDataList;
     private OnItemClickListener mOnItemClickListener;
+
+    //动画
+    private int mLastPosition = -1;
+    private boolean mOpenAnimationEnable = true;
+    private Interpolator mInterpolator = new LinearInterpolator();
+    private int mDuration = 300;
+    private BaseAnimation mSelectAnimation = new AlphaInAnimation();
 
     public NewsAdapter(Context context, List<GroupInfoEntity> list) {
         mContext = context;
@@ -71,6 +83,56 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+
+    /**
+     * add animation when you want to show time
+     *
+     * @param holder
+     */
+    public void addAnimation(RecyclerView.ViewHolder holder) {
+        if (mOpenAnimationEnable) {
+            if (holder.getLayoutPosition() > mLastPosition) {
+                BaseAnimation animation = null;
+                if (mSelectAnimation != null) {
+                    animation = mSelectAnimation;
+                }
+                for (Animator anim : animation.getAnimators(holder.itemView)) {
+                    startAnim(anim, holder.getLayoutPosition());
+                    Log.d("animline", mLastPosition + "");
+                }
+                mLastPosition = holder.getLayoutPosition();
+            }
+        }
+    }
+
+    /**
+     * set anim to start when loading
+     *
+     * @param anim
+     * @param index
+     */
+    protected void startAnim(Animator anim, int index) {
+        anim.setDuration(mDuration).start();
+        anim.setInterpolator(mInterpolator);
+    }
+
+    /**
+     * 设置动画
+     *
+     * @param animation ObjectAnimator
+     */
+    public void openLoadAnimation(BaseAnimation animation) {
+        this.mOpenAnimationEnable = true;
+        this.mSelectAnimation = animation;
+    }
+
+    /**
+     * 关闭动画
+     */
+    public void closeLoadAnimation() {
+        this.mOpenAnimationEnable = false;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_TYPE_SMALL_IMAGE) {
@@ -87,6 +149,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        addAnimation(holder);
         if (holder instanceof NewsItemSmallImageViewHolder) {
             GroupInfoEntity item = mDataList.get(position);
             NewsItemSmallImageViewHolder newsItemSmallImageViewHolder =
@@ -120,7 +183,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String url0 = item.getImage_list().get(0).getUrl();
             String url1 = item.getImage_list().get(1).getUrl();
             String url2 = item.getImage_list().get(2).getUrl();
-//            Log.d(TAG, "NewsItemMultiImageViewHolder " + item.getTitle() + " " + url0 + " " + url1 + " " + url2);
+//            Log.d(TAG, "NewsItemMultiImageViewHolder " + item.getTitle() + " " + url0 + " " +
+// url1 + " " + url2);
             Glide.with(mContext)
                     .load(item.getImage_list().get(0).getUrl())
                     .into(newsItemMultiImageViewHolder.newsImageView0);
