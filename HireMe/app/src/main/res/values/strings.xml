@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HireMe</string>
+
+    <string name="news">首页</string>
+    <string name="video">视频</string>
+    <string name="discover">发现</string>
+    <string name="mine">我</string>
+
+</resources>
