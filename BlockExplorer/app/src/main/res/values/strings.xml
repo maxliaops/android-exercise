@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BlockExplorer</string>
+    <string name="block">区块</string>
+    <string name="transaction">交易</string>
+    <string name="address">地址</string>
+    <string name="mine">我</string>
+
+    <string name="current_date">当前日期: </string>
+    <string name="prev_day">前一天</string>
+    <string name="next_day">后一天</string>
+    <string name="stop">停止</string>
+
+</resources>
