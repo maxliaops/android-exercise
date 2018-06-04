@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -22,6 +23,7 @@ import com.rainsong.blockexplorer.data.Injection;
 import com.rainsong.blockexplorer.util.GsonUtil;
 import com.rainsong.blockexplorer.util.SHA3Helper;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,13 +47,15 @@ public class BlockFragment extends BaseFragment implements BlockListAdapter.OnIt
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @BindView(R.id.tv_current_date)
-    TextView mTVCurrentDate;
+    @BindView(R.id.et_current_date)
+    EditText mETCurrentDate;
 
     @BindView(R.id.btn_prev)
     Button mBtnPrev;
     @BindView(R.id.btn_next)
     Button mBtnNext;
+    @BindView(R.id.btn_start)
+    Button mBtnStart;
     @BindView(R.id.btn_stop)
     Button mBtnStop;
 
@@ -94,10 +98,11 @@ public class BlockFragment extends BaseFragment implements BlockListAdapter.OnIt
         mRecyclerView.setAdapter(mAdapter);
         mBtnPrev.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
+        mBtnStart.setOnClickListener(this);
         mBtnStop.setOnClickListener(this);
         mCurrentDate = mSDF.format(mCalendar.getTime());
-        mTVCurrentDate.setText(String.format(getString(R.string.current_date) + "%s", mCurrentDate));
-        getBlockInfo();
+        mETCurrentDate.setText(mCurrentDate);
+//        getBlockInfo();
     }
 
     @Override
@@ -110,7 +115,7 @@ public class BlockFragment extends BaseFragment implements BlockListAdapter.OnIt
         if("2009-01-09".equalsIgnoreCase(mCurrentDate)) {
             return;
         }
-        mTVCurrentDate.setText(String.format(getString(R.string.current_date) + "%s", mCurrentDate));
+        mETCurrentDate.setText(mCurrentDate);
         mBlockRepository.getBlock(mCurrentDate)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -151,8 +156,8 @@ public class BlockFragment extends BaseFragment implements BlockListAdapter.OnIt
                             if(blockListInfo != null) {
                                 BlockListInfo.Pagination pagination = blockListInfo.getPagination();
                                 if (pagination != null) {
-                                    mBtnPrev.setText(pagination.getPrev());
-                                    mBtnNext.setText(pagination.getNext());
+//                                    mBtnPrev.setText(pagination.getPrev());
+//                                    mBtnNext.setText(pagination.getNext());
                                 }
                                 List<BlockListInfo.BlockInfo> blocks = blockListInfo.getBlocks();
                                 if (blocks != null && blocks.size() > 0) {
@@ -212,6 +217,19 @@ public class BlockFragment extends BaseFragment implements BlockListAdapter.OnIt
                 mStopFlag = false;
                 mRetryCount = 1;
                 getBlockInfo();
+                break;
+            case R.id.btn_start:
+                try {
+                    mCurrentDate = String.valueOf(mETCurrentDate.getText());
+                    Timber.d("start " + mCurrentDate);
+                    Date date = mSDF.parse(mCurrentDate);
+                    mCalendar.setTime(date);
+                    mStopFlag = false;
+                    mRetryCount = 1;
+                    getBlockInfo();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.btn_stop:
                 mStopFlag = true;
