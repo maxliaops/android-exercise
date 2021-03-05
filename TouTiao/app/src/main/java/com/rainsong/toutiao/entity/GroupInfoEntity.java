@@ -109,7 +109,7 @@ public class GroupInfoEntity implements Serializable {
     private boolean has_video;
     private int article_type;
     private String tag;
-    private int has_m3u8_video;
+    private Boolean has_m3u8_video;
     private String keywords;
     private int video_duration;
     private String label;
@@ -240,11 +240,11 @@ public class GroupInfoEntity implements Serializable {
         this.tag = tag;
     }
 
-    public int getHas_m3u8_video() {
+    public Boolean getHas_m3u8_video() {
         return has_m3u8_video;
     }
 
-    public void setHas_m3u8_video(int has_m3u8_video) {
+    public void setHas_m3u8_video(Boolean has_m3u8_video) {
         this.has_m3u8_video = has_m3u8_video;
     }
 
